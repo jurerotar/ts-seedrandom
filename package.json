@@ -1,0 +1,49 @@
+{
+  "name": "ts-seedrandom",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Seeded random number generators for JavaScript, ported to TypeScript",
+  "author": "Jure Rotar <hello@jurerotar.com>",
+  "contributors": ["David Bau"],
+  "license": "MIT",
+  "homepage": "https://github.com/jurerotar/ts-seedrandom#README",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jurerotar/ts-seedrandom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jurerotar/ts-seedrandom/issues"
+  },
+  "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "module": "dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint:check": "npx @biomejs/biome lint",
+    "lint": "npx @biomejs/biome lint --fix",
+    "format:check": "npx @biomejs/biome format",
+    "format": "npx @biomejs/biome format --write",
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "build:types": "tsc --emitDeclarationOnly",
+    "prepublishOnly": "npm run build && npm run build:types",
+    "release": "npm publish --access public"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "seedrandom": "3.0.5",
+    "typescript": "5.6.2",
+    "vite": "5.4.8",
+    "vitest": "2.1.2"
+  }
+}

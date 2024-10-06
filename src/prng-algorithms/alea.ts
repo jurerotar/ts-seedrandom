@@ -1,0 +1,87 @@
+import type { AleaGeneratorState, GeneratorInterface, PRNGAlgorithm } from 'src/types';
+
+class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
+  c = 1;
+  s0;
+  s1;
+  s2;
+
+  constructor(seed: string | number = Date.now()) {
+    let n = 0xefc8249d;
+
+    const mash = (seed: string): number => {
+      for (let i = 0; i < seed.length; i++) {
+        n += seed.charCodeAt(i);
+        let h = 0.02519603282416938 * n;
+        n = h >>> 0;
+        h -= n;
+        h *= n;
+        n = h >>> 0;
+        h -= n;
+        n += h * 0x100000000; // 2^32
+      }
+      return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+    };
+
+    const stringifiedSeed = seed.toString();
+
+    this.s0 = mash(' ');
+    this.s1 = mash(' ');
+    this.s2 = mash(' ');
+
+    this.s0 -= mash(stringifiedSeed);
+    if (this.s0 < 0) {
+      this.s0 += 1;
+    }
+    this.s1 -= mash(stringifiedSeed);
+    if (this.s1 < 0) {
+      this.s1 += 1;
+    }
+    this.s2 -= mash(stringifiedSeed);
+    if (this.s2 < 0) {
+      this.s2 += 1;
+    }
+  }
+
+  next() {
+    const { c, s0, s1, s2 } = this;
+    const t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
+    this.c = t | 0;
+    this.s0 = s1;
+    this.s1 = s2;
+    this.s2 = t - this.c;
+    return this.s2;
+  }
+
+  state(): AleaGeneratorState {
+    return {
+      c: this.c,
+      s0: this.s0,
+      s1: this.s1,
+      s2: this.s2,
+    };
+  }
+
+  setState(state: AleaGeneratorState): void {
+    this.c = state.c;
+    this.s0 = state.s0;
+    this.s1 = state.s1;
+    this.s2 = state.s2;
+  }
+}
+
+export const alea: PRNGAlgorithm<AleaGeneratorState> = (seed, state) => {
+  const aleaGenerator = new AleaGenerator(seed);
+
+  const prng = () => aleaGenerator.next();
+  prng.quick = () => aleaGenerator.next();
+  prng.double = () => prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16; // 2^-53
+  prng.int32 = () => (aleaGenerator.next() * 0x100000000) | 0;
+  prng.state = () => aleaGenerator.state();
+
+  if (typeof state !== 'undefined') {
+    aleaGenerator.setState(state);
+  }
+
+  return prng;
+};

@@ -1,9 +1,6 @@
 # ts-seedrandom
 
-Seeded random number generators for JavaScript, ported to TypeScript. Forked from https://github.com/davidbau/seedrandom.
-
-> [!WARNING]
-> Not all functionality from original package has been ported so far. Currently, only Alea and ARC4 algorithms are available.
+Seeded random number generators for JavaScript, ported to TypeScript. Based on https://github.com/shanewholloway/js-esm-seedrandom.
 
 ## Installation
 
@@ -41,4 +38,18 @@ const state = aleaGenerator.state();
 // This generator starts from the same state as first generator, but runs independently
 const secondAleaGenerator = prngAlea('seed', state);
 ```
+
+## Available Algorithms
+
+The following PRNG algorithms are available:
+
+1. `prngAlea`: Alea algorithm
+2. `prngArc4`: ARC4 algorithm
+3. `prngTychei`: Tyche-i algorithm
+4. `prngXor128`: XorShift128 algorithm
+5. `prngXor4096`: XorShift4096 algorithm
+6. `prngXorshift7`: XorShift7 algorithm
+7. `prngXorwow`: Xorwow algorithm
+
+You can import and use any of these algorithms in the same way as demonstrated in the usage examples above.
 

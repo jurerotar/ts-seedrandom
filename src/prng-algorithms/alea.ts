@@ -1,4 +1,5 @@
 import type { AleaGeneratorState, GeneratorInterface, PRNGAlgorithm } from 'src/types';
+import { mash } from 'src/utils';
 
 class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
   c = 1;
@@ -7,37 +8,23 @@ class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
   s2;
 
   constructor(seed: string | number = Date.now()) {
-    let n = 0xefc8249d;
-
-    const mash = (seed: string): number => {
-      for (let i = 0; i < seed.length; i++) {
-        n += seed.charCodeAt(i);
-        let h = 0.02519603282416938 * n;
-        n = h >>> 0;
-        h -= n;
-        h *= n;
-        n = h >>> 0;
-        h -= n;
-        n += h * 0x100000000; // 2^32
-      }
-      return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
-    };
+    const m = mash();
 
     const stringifiedSeed = seed.toString();
 
-    this.s0 = mash(' ');
-    this.s1 = mash(' ');
-    this.s2 = mash(' ');
+    this.s0 = m(' ');
+    this.s1 = m(' ');
+    this.s2 = m(' ');
 
-    this.s0 -= mash(stringifiedSeed);
+    this.s0 -= m(stringifiedSeed);
     if (this.s0 < 0) {
       this.s0 += 1;
     }
-    this.s1 -= mash(stringifiedSeed);
+    this.s1 -= m(stringifiedSeed);
     if (this.s1 < 0) {
       this.s1 += 1;
     }
-    this.s2 -= mash(stringifiedSeed);
+    this.s2 -= m(stringifiedSeed);
     if (this.s2 < 0) {
       this.s2 += 1;
     }

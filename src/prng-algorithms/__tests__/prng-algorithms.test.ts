@@ -1,45 +1,44 @@
 // @ts-ignore
-import seedrandom from 'seedrandom';
-import { prngAlea, prngArc4 } from 'src/index';
+import { prng_alea, prng_arc4, prng_tychei, prng_xor128, prng_xor4096, prng_xorshift7, prng_xorwow } from 'esm-seedrandom';
+import { prngAlea, prngArc4, prngTychei, prngXor128, prngXor4096, prngXorShift7, prngXorWow } from 'src/index';
 import { describe, expect, test } from 'vitest';
 
-// TODO: Uncomment additional tests as more algorithms are ported over
 const prngPairs = [
   {
     name: 'alea',
-    originalPrng: seedrandom.alea,
+    originalPrng: prng_alea,
     portedPrng: prngAlea,
   },
   {
     name: 'arc4',
-    originalPrng: seedrandom,
+    originalPrng: prng_arc4,
     portedPrng: prngArc4,
   },
-  // {
-  //   name: 'tychei',
-  //   originalPrng: seedrandom.tychei,
-  //   portedPrng: prngAlea,
-  // },
-  // {
-  //   name: 'xor128',
-  //   originalPrng: seedrandom.xor128,
-  //   portedPrng: prngAlea,
-  // },
-  // {
-  //   name: 'xor4096',
-  //   originalPrng: seedrandom.xor4096,
-  //   portedPrng: prngAlea,
-  // },
-  // {
-  //   name: 'xorShift7',
-  //   originalPrng: seedrandom.xorShift7,
-  //   portedPrng: prngAlea,
-  // },
-  // {
-  //   name: 'xorWow',
-  //   originalPrng: seedrandom.xorWow,
-  //   portedPrng: prngAlea,
-  // },
+  {
+    name: 'tychei',
+    originalPrng: prng_tychei,
+    portedPrng: prngTychei,
+  },
+  {
+    name: 'xor128',
+    originalPrng: prng_xor128,
+    portedPrng: prngXor128,
+  },
+  {
+    name: 'xor4096',
+    originalPrng: prng_xor4096,
+    portedPrng: prngXor4096,
+  },
+  {
+    name: 'xorShift7',
+    originalPrng: prng_xorshift7,
+    portedPrng: prngXorShift7,
+  },
+  {
+    name: 'xorWow',
+    originalPrng: prng_xorwow,
+    portedPrng: prngXorWow,
+  },
 ];
 
 describe('prng algorithms', () => {
@@ -49,11 +48,11 @@ describe('prng algorithms', () => {
         const originalPrngInstance = originalPrng('seed');
         const portedPrngInstance = portedPrng('seed');
 
-        for (let i = 0; i <= 100; i += 1) {
+        for (let i = 0; i <= 10000; i += 1) {
           const originalPrngNextValue = originalPrngInstance();
           const portedPrngNextValue = portedPrngInstance();
 
-          expect(originalPrngNextValue).toEqual(portedPrngNextValue);
+          expect(originalPrngNextValue, `Failed on iteration ${i}`).toEqual(portedPrngNextValue);
         }
       });
 

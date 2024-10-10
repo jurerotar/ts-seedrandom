@@ -1,10 +1,10 @@
 {
   "name": "ts-seedrandom",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Seeded random number generators for JavaScript, ported to TypeScript",
   "author": "Jure Rotar <hello@jurerotar.com>",
-  "contributors": ["David Bau"],
+  "contributors": ["David Bau", "Shane Holloway"],
   "license": "MIT",
   "homepage": "https://github.com/jurerotar/ts-seedrandom#README",
   "repository": {
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "seedrandom": "3.0.5",
+    "esm-seedrandom": "^3.0.5",
     "typescript": "5.6.2",
     "vite": "5.4.8",
     "vitest": "2.1.2"

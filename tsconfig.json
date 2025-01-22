@@ -2,13 +2,12 @@
   "compilerOptions": {
     "outDir": "dist",
     "target": "ESNext",
-    "lib": ["esnext"],
-    "types": ["vite/client", "vitest"],
-    "typeRoots": ["node_modules/@types", "node_modules"],
+    "lib": ["ESNext"],
+    "types": ["vitest"],
     "baseUrl": "./",
     "allowJs": false,
     "skipLibCheck": true,
-    "declaration": true,
+    "declaration": false,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -18,14 +17,10 @@
     "strictPropertyInitialization": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "moduleResolution": "bundler",
-    "noEmit": false,
+    "moduleResolution": "Bundler",
+    "noEmit": true,
     "strict": true,
-    "module": "esnext",
-    "paths": {
-      "src/*": ["src/*"]
-    }
+    "module": "ESNext"
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["./src/index.ts"]
+  "include": ["src"]
 }

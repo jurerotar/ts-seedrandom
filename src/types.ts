@@ -49,6 +49,33 @@ export type XorwowGeneratorState = {
   d: number;
 };
 
+export type Xoshiro128PlusGeneratorState = {
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+};
+
+export type Xoshiro128PlusPlusGeneratorState = {
+  s0: number;
+  s1: number;
+  s2: number;
+  s3: number;
+};
+
+export type Mulberry32GeneratorState = {
+  s: number;
+};
+
+export type Pcg32GeneratorState = {
+  s: bigint;
+  inc: bigint;
+};
+
+export type SplitMix64GeneratorState = {
+  s: bigint;
+};
+
 type PRNGFunctionName = 'quick' | 'double' | 'int32';
 
 export type PRNGFunction = (() => number) & Record<PRNGFunctionName, () => number>;
@@ -57,6 +84,11 @@ export type PRNGAlgorithmState =
   | AleaGeneratorState
   | Arc4GeneratorState
   | TycheiGeneratorState
+  | Mulberry32GeneratorState
+  | SplitMix64GeneratorState
+  | Pcg32GeneratorState
+  | Xoshiro128PlusGeneratorState
+  | Xoshiro128PlusPlusGeneratorState
   | Xor128GeneratorState
   | Xor4096GeneratorState
   | XorShift7GeneratorState

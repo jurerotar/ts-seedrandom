@@ -6,7 +6,7 @@
   "author": "Jure Rotar <hello@jurerotar.com>",
   "contributors": ["David Bau", "Shane Holloway"],
   "license": "MIT",
-  "homepage": "https://github.com/jurerotar/ts-seedrandom#README",
+  "homepage": "https://github.com/jurerotar/ts-seedrandom#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jurerotar/ts-seedrandom.git"
@@ -41,8 +41,8 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "esm-seedrandom": "3.0.5",
-    "tsup": "8.3.5",
-    "typescript": "5.7.3",
-    "vitest": "3.0.3"
+    "tsup": "8.5.0",
+    "typescript": "5.8.3",
+    "vitest": "3.2.3"
   }
 }

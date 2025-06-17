@@ -1,4 +1,8 @@
-import type { AleaGeneratorState, GeneratorInterface, PRNGAlgorithm } from 'src/types';
+import type {
+  AleaGeneratorState,
+  GeneratorInterface,
+  PRNGAlgorithm,
+} from 'src/types';
 import { mash } from 'src/utils';
 
 class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
@@ -62,7 +66,8 @@ export const alea: PRNGAlgorithm<AleaGeneratorState> = (seed, state) => {
 
   const prng = () => aleaGenerator.next();
   prng.quick = () => aleaGenerator.next();
-  prng.double = () => prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16; // 2^-53
+  prng.double = () =>
+    prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16; // 2^-53
   prng.int32 = () => (aleaGenerator.next() * 0x100000000) | 0;
   prng.state = () => aleaGenerator.state();
 

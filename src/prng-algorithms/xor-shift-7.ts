@@ -1,7 +1,13 @@
-import type { GeneratorInterface, PRNGAlgorithm, XorShift7GeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  XorShift7GeneratorState,
+} from 'src/types';
 import { xorDouble } from 'src/utils';
 
-class XorShift7Generator implements GeneratorInterface<XorShift7GeneratorState> {
+class XorShift7Generator
+  implements GeneratorInterface<XorShift7GeneratorState>
+{
   x: number[] = [];
   i = 0;
 
@@ -13,7 +19,9 @@ class XorShift7Generator implements GeneratorInterface<XorShift7GeneratorState> 
       const stringifiedSeed = seed.toString();
 
       for (let j = 0; j < stringifiedSeed.length; ++j) {
-        this.x[j & 7] = (this.x[j & 7] << 15) ^ ((stringifiedSeed.charCodeAt(j) + this.x[(j + 1) & 7]) << 13);
+        this.x[j & 7] =
+          (this.x[j & 7] << 15) ^
+          ((stringifiedSeed.charCodeAt(j) + this.x[(j + 1) & 7]) << 13);
       }
     }
 
@@ -64,7 +72,10 @@ class XorShift7Generator implements GeneratorInterface<XorShift7GeneratorState> 
   }
 }
 
-export const xorShift7: PRNGAlgorithm<XorShift7GeneratorState> = (seed, state) => {
+export const xorShift7: PRNGAlgorithm<XorShift7GeneratorState> = (
+  seed,
+  state,
+) => {
   const xorShift7Generator = new XorShift7Generator(seed);
 
   const prng = () => (xorShift7Generator.next() >>> 0) / 0x100000000;

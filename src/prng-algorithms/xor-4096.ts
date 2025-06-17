@@ -1,4 +1,8 @@
-import type { GeneratorInterface, PRNGAlgorithm, Xor4096GeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  Xor4096GeneratorState,
+} from 'src/types';
 import { xorDouble } from 'src/utils';
 
 class Xor4096Generator implements GeneratorInterface<Xor4096GeneratorState> {

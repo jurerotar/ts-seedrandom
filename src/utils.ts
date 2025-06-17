@@ -18,7 +18,9 @@ export const mash = (): ((seed: string) => number) => {
   };
 };
 
-export const xorDouble = <T = PRNGAlgorithmState>(generator: GeneratorInterface<T>) => {
+export const xorDouble = <T = PRNGAlgorithmState>(
+  generator: GeneratorInterface<T>,
+): number => {
   let top: number;
   let bot: number;
   let result: number;
@@ -29,4 +31,8 @@ export const xorDouble = <T = PRNGAlgorithmState>(generator: GeneratorInterface<
     result = (top + bot) / (1 << 21);
   } while (result === 0);
   return result;
+};
+
+export const rotl = (x: number, k: number): number => {
+  return ((x << k) | (x >>> (32 - k))) >>> 0;
 };

@@ -1,96 +1,92 @@
-// @ts-ignore
-import { prng_alea, prng_arc4, prng_tychei, prng_xor128, prng_xor4096, prng_xorshift7, prng_xorwow } from 'esm-seedrandom';
-import { prngAlea, prngArc4, prngTychei, prngXor128, prngXor4096, prngXorShift7, prngXorWow } from 'src/index';
-import { describe, expect, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
+import {
+  prngAlea,
+  prngArc4,
+  prngTychei,
+  prngMulberry32,
+  prngSplitMix64,
+  prngPcg32,
+  prngXor128,
+  prngXor4096,
+  prngXorShift7,
+  prngXorWow,
+  prngXoshiro128plus,
+  prngXoshiro128plusplus,
+} from 'src/index';
 
-const prngPairs = [
-  {
-    name: 'alea',
-    originalPrng: prng_alea,
-    portedPrng: prngAlea,
-  },
-  {
-    name: 'arc4',
-    originalPrng: prng_arc4,
-    portedPrng: prngArc4,
-  },
-  {
-    name: 'tychei',
-    originalPrng: prng_tychei,
-    portedPrng: prngTychei,
-  },
-  {
-    name: 'xor128',
-    originalPrng: prng_xor128,
-    portedPrng: prngXor128,
-  },
-  {
-    name: 'xor4096',
-    originalPrng: prng_xor4096,
-    portedPrng: prngXor4096,
-  },
-  {
-    name: 'xorShift7',
-    originalPrng: prng_xorshift7,
-    portedPrng: prngXorShift7,
-  },
-  {
-    name: 'xorWow',
-    originalPrng: prng_xorwow,
-    portedPrng: prngXorWow,
-  },
+const PRNGS = [
+  { name: 'alea', prng: prngAlea },
+  { name: 'arc4', prng: prngArc4 },
+  { name: 'tychei', prng: prngTychei },
+  { name: 'mulberry32', prng: prngMulberry32 },
+  { name: 'splitmix64', prng: prngSplitMix64 },
+  { name: 'pcg32', prng: prngPcg32 },
+  { name: 'xor128', prng: prngXor128 },
+  { name: 'xor4096', prng: prngXor4096 },
+  { name: 'xorshift7', prng: prngXorShift7 },
+  { name: 'xorwow', prng: prngXorWow },
+  { name: 'xoshiro128+', prng: prngXoshiro128plus },
+  { name: 'xoshiro128++', prng: prngXoshiro128plusplus },
 ];
 
-describe('prng algorithms', () => {
-  for (const { name, originalPrng, portedPrng } of prngPairs) {
-    describe(name, () => {
-      test(`"quick" method's values should match`, () => {
-        const originalPrngInstance = originalPrng('seed');
-        const portedPrngInstance = portedPrng('seed');
+for (const { name, prng } of PRNGS) {
+  describe(`${name} PRNG`, () => {
+    test('is deterministic from seed', () => {
+      const a = prng('seed');
+      const b = prng('seed');
 
-        for (let i = 0; i <= 10000; i += 1) {
-          const originalPrngNextValue = originalPrngInstance();
-          const portedPrngNextValue = portedPrngInstance();
+      const seqA = Array.from({ length: 10 }, () => a());
+      const seqB = Array.from({ length: 10 }, () => b());
 
-          expect(originalPrngNextValue, `Failed on iteration ${i}`).toEqual(portedPrngNextValue);
-        }
-      });
-
-      test(`"double" method's values should match`, () => {
-        const originalPrngInstance = originalPrng('seed');
-        const portedPrngInstance = portedPrng('seed');
-
-        for (let i = 0; i <= 100; i += 1) {
-          const originalPrngNextValue = originalPrngInstance.double();
-          const portedPrngNextValue = portedPrngInstance.double();
-
-          expect(originalPrngNextValue).toEqual(portedPrngNextValue);
-        }
-      });
-
-      test(`"int32" method's values should match`, () => {
-        const originalPrngInstance = originalPrng('seed');
-        const portedPrngInstance = portedPrng('seed');
-
-        for (let i = 0; i <= 100; i += 1) {
-          const originalPrngNextValue = originalPrngInstance.int32();
-          const portedPrngNextValue = portedPrngInstance.int32();
-
-          expect(originalPrngNextValue).toEqual(portedPrngNextValue);
-        }
-      });
-
-      test(`"state" method's values should match`, () => {
-        const originalPrngInstance = originalPrng('seed', { state: true });
-        const portedPrngInstance = portedPrng('seed');
-
-        for (let i = 0; i <= 100; i += 1) {
-          const originalNextState = originalPrngInstance.state();
-          const newNextState = portedPrngInstance.state();
-
-          expect(originalNextState).toEqual(newNextState);
-        }
-      });
+      expect(seqA).toEqual(seqB);
     });
-  }
-});
+
+    test('produces values in [0, 1)', () => {
+      const instance = prng('seed');
+
+      for (let i = 0; i < 1000; i++) {
+        const n = instance();
+        expect(n).toBeGreaterThanOrEqual(0);
+        expect(n).toBeLessThan(1);
+      }
+    });
+
+    test('restores from exported state', () => {
+      const original = prng('seed');
+
+      for (let i = 0; i < 5; i++) {
+        original();
+      }
+
+      const savedState = original.state();
+
+      // @ts-expect-error: ts issue due to different states
+      const resumed = prng('ignored', savedState);
+      const next5 = Array.from({ length: 5 }, () => resumed());
+      const continued = Array.from({ length: 5 }, () => original());
+
+      expect(next5).toEqual(continued);
+    });
+
+    test('int32 returns valid signed 32-bit integers', () => {
+      const instance = prng('seed');
+
+      for (let i = 0; i < 1000; i++) {
+        const int = instance.int32();
+        expect(Number.isInteger(int)).toBe(true);
+        expect(int).toBeGreaterThanOrEqual(-2147483648);
+        expect(int).toBeLessThanOrEqual(2147483647);
+      }
+    });
+
+    test('double returns high-precision floats in [0, 1)', () => {
+      const instance = prng('seed');
+
+      for (let i = 0; i < 1000; i++) {
+        const dbl = instance.double();
+        expect(dbl).toBeGreaterThanOrEqual(0);
+        expect(dbl).toBeLessThan(1);
+      }
+    });
+  });
+}

@@ -1,10 +1,19 @@
-import type { GeneratorInterface, PRNGAlgorithm, Mulberry32GeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  Mulberry32GeneratorState,
+} from 'src/types';
 
-class Mulberry32Generator implements GeneratorInterface<Mulberry32GeneratorState> {
+class Mulberry32Generator
+  implements GeneratorInterface<Mulberry32GeneratorState>
+{
   s: number;
 
   constructor(seed: string | number = Date.now()) {
-    const s = typeof seed === 'number' ? seed : [...seed.toString()].reduce((a, c) => a + c.charCodeAt(0), 0);
+    const s =
+      typeof seed === 'number'
+        ? seed
+        : [...seed.toString()].reduce((a, c) => a + c.charCodeAt(0), 0);
     this.s = s >>> 0;
   }
 
@@ -27,7 +36,10 @@ class Mulberry32Generator implements GeneratorInterface<Mulberry32GeneratorState
   }
 }
 
-export const mulberry32: PRNGAlgorithm<Mulberry32GeneratorState> = (seed, state) => {
+export const mulberry32: PRNGAlgorithm<Mulberry32GeneratorState> = (
+  seed,
+  state,
+) => {
   const g = new Mulberry32Generator(seed);
   if (state) {
     g.setState(state);
@@ -35,7 +47,8 @@ export const mulberry32: PRNGAlgorithm<Mulberry32GeneratorState> = (seed, state)
 
   const prng = () => g.next();
   prng.quick = prng;
-  prng.double = () => prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
+  prng.double = () =>
+    prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
   prng.int32 = () => (prng() * 0x100000000) | 0;
   prng.state = () => g.state();
 

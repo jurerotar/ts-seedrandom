@@ -78,7 +78,8 @@ export type SplitMix64GeneratorState = {
 
 type PRNGFunctionName = 'quick' | 'double' | 'int32';
 
-export type PRNGFunction = (() => number) & Record<PRNGFunctionName, () => number>;
+export type PRNGFunction = (() => number) &
+  Record<PRNGFunctionName, () => number>;
 
 export type PRNGAlgorithmState =
   | AleaGeneratorState

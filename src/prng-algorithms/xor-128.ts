@@ -1,4 +1,8 @@
-import type { GeneratorInterface, PRNGAlgorithm, Xor128GeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  Xor128GeneratorState,
+} from 'src/types';
 import { xorDouble } from 'src/utils';
 
 class Xor128Generator implements GeneratorInterface<Xor128GeneratorState> {

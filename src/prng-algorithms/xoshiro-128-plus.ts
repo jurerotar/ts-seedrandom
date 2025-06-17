@@ -1,7 +1,13 @@
-import type { GeneratorInterface, PRNGAlgorithm, Xoshiro128PlusGeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  Xoshiro128PlusGeneratorState,
+} from 'src/types';
 import { rotl } from 'src/utils';
 
-class Xoshiro128PlusGenerator implements GeneratorInterface<Xoshiro128PlusGeneratorState> {
+class Xoshiro128PlusGenerator
+  implements GeneratorInterface<Xoshiro128PlusGeneratorState>
+{
   s0: number;
   s1: number;
   s2: number;
@@ -9,7 +15,10 @@ class Xoshiro128PlusGenerator implements GeneratorInterface<Xoshiro128PlusGenera
 
   constructor(seed: string | number = Date.now()) {
     // Use SplitMix64 to seed the state (reliable seeder)
-    const hash = typeof seed === 'number' ? seed.toString() : [...seed.toString()].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const hash =
+      typeof seed === 'number'
+        ? seed.toString()
+        : [...seed.toString()].reduce((acc, c) => acc + c.charCodeAt(0), 0);
 
     let sm = BigInt(hash);
     const next = () => {
@@ -60,7 +69,10 @@ class Xoshiro128PlusGenerator implements GeneratorInterface<Xoshiro128PlusGenera
   }
 }
 
-export const xoshiro128plus: PRNGAlgorithm<Xoshiro128PlusGeneratorState> = (seed, state) => {
+export const xoshiro128plus: PRNGAlgorithm<Xoshiro128PlusGeneratorState> = (
+  seed,
+  state,
+) => {
   const generator = new Xoshiro128PlusGenerator(seed);
   if (state) {
     generator.setState(state);
@@ -68,7 +80,8 @@ export const xoshiro128plus: PRNGAlgorithm<Xoshiro128PlusGeneratorState> = (seed
 
   const prng = () => generator.next();
   prng.quick = prng;
-  prng.double = () => prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
+  prng.double = () =>
+    prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
   prng.int32 = () => (prng() * 0x100000000) | 0;
   prng.state = () => generator.state();
 

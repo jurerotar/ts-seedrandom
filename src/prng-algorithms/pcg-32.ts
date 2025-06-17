@@ -1,11 +1,18 @@
-import type { GeneratorInterface, PRNGAlgorithm, Pcg32GeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  Pcg32GeneratorState,
+} from 'src/types';
 
 class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   s: bigint;
   inc: bigint;
 
   constructor(seed: string | number = Date.now()) {
-    const seedNum = typeof seed === 'number' ? BigInt(seed) : BigInt([...seed.toString()].reduce((a, c) => a + c.charCodeAt(0), 0));
+    const seedNum =
+      typeof seed === 'number'
+        ? BigInt(seed)
+        : BigInt([...seed.toString()].reduce((a, c) => a + c.charCodeAt(0), 0));
     this.s = 0n;
     this.inc = (seedNum << 1n) | 1n; // Must be odd
     this.next(); // advance once to mix in seed
@@ -49,7 +56,8 @@ export const pcg32: PRNGAlgorithm<Pcg32GeneratorState> = (seed, state) => {
 
   const prng = () => generator.next();
   prng.quick = prng;
-  prng.double = () => prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
+  prng.double = () =>
+    prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
   prng.int32 = () => (generator.next() * 0x100000000) | 0;
   prng.state = () => generator.state();
 

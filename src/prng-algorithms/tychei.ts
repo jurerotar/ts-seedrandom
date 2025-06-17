@@ -1,7 +1,13 @@
-import type { GeneratorInterface, PRNGAlgorithm, TycheiGeneratorState } from 'src/types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  TycheiGeneratorState,
+} from 'src/types';
 import { xorDouble } from 'src/utils';
 
-const createTycheiGenerator = (seed: string | number = Date.now()): GeneratorInterface<TycheiGeneratorState> => {
+const createTycheiGenerator = (
+  seed: string | number = Date.now(),
+): GeneratorInterface<TycheiGeneratorState> => {
   let a = 0;
   let b = 0;
   let c = 2654435769 | 0;

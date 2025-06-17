@@ -1,10 +1,16 @@
-import type { Arc4GeneratorExtraMethods, Arc4GeneratorState, GeneratorInterface, PRNGAlgorithm } from 'src/types';
+import type {
+  Arc4GeneratorExtraMethods,
+  Arc4GeneratorState,
+  GeneratorInterface,
+  PRNGAlgorithm,
+} from 'src/types';
 
 const ARC4_START_DENOMINATION = 281474976710656;
 const ARC4_SIGNIFICANCE = 4503599627370496;
 const ARC4_OVERFLOW = 9007199254740992n;
 
-type ARC4GeneratorInterface = GeneratorInterface<Arc4GeneratorState> & Arc4GeneratorExtraMethods;
+type ARC4GeneratorInterface = GeneratorInterface<Arc4GeneratorState> &
+  Arc4GeneratorExtraMethods;
 
 class ARC4Generator implements ARC4GeneratorInterface {
   i = 0;

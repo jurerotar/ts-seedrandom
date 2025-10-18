@@ -65,16 +65,16 @@ class XorwowGenerator implements GeneratorInterface<XorwowGeneratorState> {
 }
 
 export const xorWow: PRNGAlgorithm<XorwowGeneratorState> = (seed, state) => {
-  const xorWowGenerator = new XorwowGenerator(seed);
+  const generator = new XorwowGenerator(seed);
 
-  const prng = () => (xorWowGenerator.next() >>> 0) / 0x100000000;
-  prng.quick = () => prng();
-  prng.double = () => xorDouble(xorWowGenerator);
-  prng.int32 = () => xorWowGenerator.next() | 0;
-  prng.state = () => xorWowGenerator.state();
+  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  prng.quick = prng;
+  prng.double = () => xorDouble(generator);
+  prng.int32 = () => generator.next() | 0;
+  prng.state = () => generator.state();
 
   if (typeof state !== 'undefined') {
-    xorWowGenerator.setState(state);
+    generator.setState(state);
   }
 
   return prng;

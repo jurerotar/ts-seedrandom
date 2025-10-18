@@ -72,6 +72,7 @@ export const xoshiro128plusplus: PRNGAlgorithm<
   Xoshiro128PlusPlusGeneratorState
 > = (seed, state) => {
   const generator = new Xoshiro128PlusPlusGenerator(seed);
+
   if (state) {
     generator.setState(state);
   }

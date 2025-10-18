@@ -5,6 +5,21 @@ import type {
 } from 'src/types';
 import { xorDouble } from 'src/utils';
 
+const splitMix32 = (seed: number): (() => number) => {
+  let z = seed >>> 0;
+
+  return () => {
+    z = (z + 0x9e3779b9) >>> 0; // golden ratio
+    let v = z;
+    v = (v ^ (v >>> 16)) >>> 0;
+    v = Math.imul(v, 0x85ebca6b) >>> 0;
+    v = (v ^ (v >>> 13)) >>> 0;
+    v = Math.imul(v, 0xc2b2ae35) >>> 0;
+    v = (v ^ (v >>> 16)) >>> 0;
+    return v >>> 0;
+  };
+};
+
 class XorShift7Generator
   implements GeneratorInterface<XorShift7GeneratorState>
 {
@@ -12,29 +27,28 @@ class XorShift7Generator
   i = 0;
 
   constructor(seed: string | number = Date.now()) {
-    if (Number.isInteger(seed)) {
-      // Seed state array using a 32-bit integer.
-      this.x[0] = seed as number;
+    this.x = new Array(8).fill(0);
+    this.i = 0;
+
+    let seedNum32: number;
+    if (typeof seed === 'number' && Number.isInteger(seed)) {
+      seedNum32 = seed >>> 0;
     } else {
-      const stringifiedSeed = seed.toString();
-
-      for (let j = 0; j < stringifiedSeed.length; ++j) {
-        this.x[j & 7] =
-          (this.x[j & 7] << 15) ^
-          ((stringifiedSeed.charCodeAt(j) + this.x[(j + 1) & 7]) << 13);
+      const s = seed.toString();
+      let h = 0x811c9dc5 >>> 0;
+      for (let k = 0; k < s.length; k++) {
+        h ^= s.charCodeAt(k);
+        h = Math.imul(h, 0x01000193) >>> 0;
       }
+      seedNum32 = h >>> 0;
     }
 
-    // Enforce an array length of 8, not all zeroes.
-    while (this.x.length < 8) {
-      this.x.push(0);
+    const gen = splitMix32(seedNum32);
+    for (let k = 0; k < 8; k++) {
+      this.x[k] = gen() >>> 0;
     }
 
-    if (this.x.every((e) => e === 0)) {
-      (this.x as number[])[7] = -1;
-    }
-
-    for (let j = 256; j > 0; --j) {
+    for (let j = 0; j < 256; ++j) {
       this.next();
     }
   }
@@ -42,21 +56,28 @@ class XorShift7Generator
   next(): number {
     let t: number;
     let v: number;
-    t = this.x[this.i];
+
+    t = this.x[this.i] >>> 0;
     t ^= t >>> 7;
-    v = t ^ (t << 24);
-    t = this.x[(this.i + 1) & 7];
-    v ^= t ^ (t >>> 10);
-    t = this.x[(this.i + 3) & 7];
-    v ^= t ^ (t >>> 3);
-    t = this.x[(this.i + 4) & 7];
-    v ^= t ^ (t << 7);
-    t = this.x[(this.i + 7) & 7];
-    t = t ^ (t << 13);
-    v ^= t ^ (t << 9);
-    this.x[this.i] = v;
+    v = (t ^ (t << 24)) >>> 0;
+
+    t = this.x[(this.i + 1) & 7] >>> 0;
+    v = (v ^ t ^ (t >>> 10)) >>> 0;
+
+    t = this.x[(this.i + 3) & 7] >>> 0;
+    v = (v ^ t ^ (t >>> 3)) >>> 0;
+
+    t = this.x[(this.i + 4) & 7] >>> 0;
+    v = (v ^ t ^ (t << 7)) >>> 0;
+
+    t = this.x[(this.i + 7) & 7] >>> 0;
+    t = (t ^ (t << 13)) >>> 0;
+    v = (v ^ t ^ (t << 9)) >>> 0;
+
+    this.x[this.i] = v >>> 0;
     this.i = (this.i + 1) & 7;
-    return v;
+
+    return v >>> 0;
   }
 
   state(): XorShift7GeneratorState {
@@ -76,16 +97,16 @@ export const xorShift7: PRNGAlgorithm<XorShift7GeneratorState> = (
   seed,
   state,
 ) => {
-  const xorShift7Generator = new XorShift7Generator(seed);
+  const generator = new XorShift7Generator(seed);
 
-  const prng = () => (xorShift7Generator.next() >>> 0) / 0x100000000;
-  prng.quick = () => prng();
-  prng.double = () => xorDouble(xorShift7Generator);
-  prng.int32 = () => xorShift7Generator.next() | 0;
-  prng.state = () => xorShift7Generator.state();
+  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  prng.quick = prng;
+  prng.double = () => xorDouble(generator);
+  prng.int32 = () => generator.next() | 0;
+  prng.state = () => generator.state();
 
   if (typeof state !== 'undefined') {
-    xorShift7Generator.setState(state);
+    generator.setState(state);
   }
 
   return prng;

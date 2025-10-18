@@ -61,16 +61,16 @@ const createTycheiGenerator = (
 };
 
 export const tychei: PRNGAlgorithm<TycheiGeneratorState> = (seed, state) => {
-  const tycheiGenerator = createTycheiGenerator(seed);
+  const generator = createTycheiGenerator(seed);
 
-  const prng = () => (tycheiGenerator.next() >>> 0) / 0x100000000;
-  prng.quick = () => prng();
-  prng.double = () => xorDouble(tycheiGenerator);
-  prng.int32 = () => tycheiGenerator.next() | 0;
-  prng.state = () => tycheiGenerator.state();
+  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  prng.quick = prng;
+  prng.double = () => xorDouble(generator);
+  prng.int32 = () => generator.next() | 0;
+  prng.state = () => generator.state();
 
   if (typeof state !== 'undefined') {
-    tycheiGenerator.setState(state);
+    generator.setState(state);
   }
 
   return prng;

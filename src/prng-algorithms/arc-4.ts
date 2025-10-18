@@ -129,7 +129,7 @@ export const arc4: PRNGAlgorithm<Arc4GeneratorState> = (seed, state) => {
   }
 
   const prng = () => generator.next();
-  prng.quick = () => generator.g(4) / 0x100000000;
+  prng.quick = prng;
   prng.double = () => generator.next();
   prng.int32 = () => generator.g(4) | 0;
   prng.state = () => generator.state();

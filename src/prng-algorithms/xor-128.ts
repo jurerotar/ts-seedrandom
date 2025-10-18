@@ -52,16 +52,16 @@ class Xor128Generator implements GeneratorInterface<Xor128GeneratorState> {
 }
 
 export const xor128: PRNGAlgorithm<Xor128GeneratorState> = (seed, state) => {
-  const xor128Generator = new Xor128Generator(seed);
+  const generator = new Xor128Generator(seed);
 
-  const prng = () => (xor128Generator.next() >>> 0) / 0x100000000;
-  prng.quick = () => prng();
-  prng.double = () => xorDouble(xor128Generator);
-  prng.int32 = () => xor128Generator.next() | 0;
-  prng.state = () => xor128Generator.state();
+  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  prng.quick = prng;
+  prng.double = () => xorDouble(generator);
+  prng.int32 = () => generator.next() | 0;
+  prng.state = () => generator.state();
 
   if (typeof state !== 'undefined') {
-    xor128Generator.setState(state);
+    generator.setState(state);
   }
 
   return prng;

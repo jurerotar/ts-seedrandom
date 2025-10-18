@@ -40,17 +40,17 @@ export const mulberry32: PRNGAlgorithm<Mulberry32GeneratorState> = (
   seed,
   state,
 ) => {
-  const g = new Mulberry32Generator(seed);
+  const generator = new Mulberry32Generator(seed);
   if (state) {
-    g.setState(state);
+    generator.setState(state);
   }
 
-  const prng = () => g.next();
+  const prng = () => generator.next();
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
   prng.int32 = () => (prng() * 0x100000000) | 0;
-  prng.state = () => g.state();
+  prng.state = () => generator.state();
 
   return prng;
 };

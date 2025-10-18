@@ -1,20 +1,21 @@
-import { alea } from 'src/prng-algorithms/alea';
-import { arc4 } from 'src/prng-algorithms/arc-4';
-import { tychei } from 'src/prng-algorithms/tychei';
-import { xor128 } from 'src/prng-algorithms/xor-128';
-import { xor4096 } from 'src/prng-algorithms/xor-4096';
-import { xorShift7 } from 'src/prng-algorithms/xor-shift-7';
-import { xorWow } from 'src/prng-algorithms/xor-wow';
-import { pcg32 } from 'src/prng-algorithms/pcg-32';
-import { mulberry32 } from 'src/prng-algorithms/mulberry-32';
-import { splitMix64 } from 'src/prng-algorithms/split-mix-64';
-import { xoshiro128plus } from 'src/prng-algorithms/xoshiro-128-plus';
-import { xoshiro128plusplus } from 'src/prng-algorithms/xoshiro-128-plus-plus';
-import type {
-  AleaGeneratorState,
-  Arc4GeneratorState,
+export { alea as prngAlea } from 'src/prng-algorithms/alea';
+export { arc4 as prngArc4 } from 'src/prng-algorithms/arc-4';
+export { tychei as prngTychei } from 'src/prng-algorithms/tychei';
+export { xor128 as prngXor128 } from 'src/prng-algorithms/xor-128';
+export { xor4096 as prngXor4096 } from 'src/prng-algorithms/xor-4096';
+export { xorShift7 as prngXorShift7 } from 'src/prng-algorithms/xor-shift-7';
+export { xorWow as prngXorWow } from 'src/prng-algorithms/xor-wow';
+export { pcg32 as prngPcg32 } from 'src/prng-algorithms/pcg-32';
+export { mulberry32 as prngMulberry32 } from 'src/prng-algorithms/mulberry-32';
+export { splitMix64 as prngSplitMix64 } from 'src/prng-algorithms/split-mix-64';
+export { xoshiro128plus as prngXoshiro128plus } from 'src/prng-algorithms/xoshiro-128-plus';
+export { xoshiro128plusplus as prngXoshiro128plusplus } from 'src/prng-algorithms/xoshiro-128-plus-plus';
+
+export type {
   PRNGAlgorithm,
   PRNGFunction,
+  AleaGeneratorState,
+  Arc4GeneratorState,
   TycheiGeneratorState,
   Xor128GeneratorState,
   Xor4096GeneratorState,
@@ -26,32 +27,3 @@ import type {
   Xoshiro128PlusPlusGeneratorState,
   Xoshiro128PlusGeneratorState,
 } from 'src/types';
-
-export {
-  alea as prngAlea,
-  arc4 as prngArc4,
-  tychei as prngTychei,
-  xor128 as prngXor128,
-  xor4096 as prngXor4096,
-  xorShift7 as prngXorShift7,
-  xorWow as prngXorWow,
-  pcg32 as prngPcg32,
-  mulberry32 as prngMulberry32,
-  splitMix64 as prngSplitMix64,
-  xoshiro128plus as prngXoshiro128plus,
-  xoshiro128plusplus as prngXoshiro128plusplus,
-  type PRNGAlgorithm,
-  type PRNGFunction,
-  type AleaGeneratorState,
-  type Arc4GeneratorState,
-  type TycheiGeneratorState,
-  type Xor128GeneratorState,
-  type Xor4096GeneratorState,
-  type XorShift7GeneratorState,
-  type XorwowGeneratorState,
-  type Mulberry32GeneratorState,
-  type Pcg32GeneratorState,
-  type SplitMix64GeneratorState,
-  type Xoshiro128PlusPlusGeneratorState,
-  type Xoshiro128PlusGeneratorState,
-};

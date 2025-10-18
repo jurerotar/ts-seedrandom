@@ -62,17 +62,17 @@ class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
 }
 
 export const alea: PRNGAlgorithm<AleaGeneratorState> = (seed, state) => {
-  const aleaGenerator = new AleaGenerator(seed);
+  const generator = new AleaGenerator(seed);
 
-  const prng = () => aleaGenerator.next();
-  prng.quick = () => aleaGenerator.next();
+  const prng = () => generator.next();
+  prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16; // 2^-53
-  prng.int32 = () => (aleaGenerator.next() * 0x100000000) | 0;
-  prng.state = () => aleaGenerator.state();
+  prng.int32 = () => (generator.next() * 0x100000000) | 0;
+  prng.state = () => generator.state();
 
   if (typeof state !== 'undefined') {
-    aleaGenerator.setState(state);
+    generator.setState(state);
   }
 
   return prng;

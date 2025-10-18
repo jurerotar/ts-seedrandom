@@ -4,6 +4,9 @@ import type {
   Pcg32GeneratorState,
 } from 'src/types';
 
+const MASK64 = (1n << 64n) - 1n;
+const MULTIPLIER = 6364136223846793005n;
+
 class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   s: bigint;
   inc: bigint;
@@ -13,21 +16,27 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
       typeof seed === 'number'
         ? BigInt(seed)
         : BigInt([...seed.toString()].reduce((a, c) => a + c.charCodeAt(0), 0));
+
     this.s = 0n;
-    this.inc = (seedNum << 1n) | 1n; // Must be odd
-    this.next(); // advance once to mix in seed
-    this.s += seedNum;
-    this.next(); // advance again
+    this.inc = ((seedNum << 1n) | 1n) & MASK64;
+
+    this.nextUInt32();
+    this.s = (this.s + seedNum) & MASK64;
+    this.nextUInt32();
   }
 
   private nextUInt32(): number {
-    const multiplier = 6364136223846793005n;
+    this.s = (this.s * MULTIPLIER + this.inc) & MASK64;
 
-    this.s = this.s * multiplier + this.inc;
-    const xorShifted = Number(((this.s >> 18n) ^ this.s) >> 27n) & 0xffffffff;
-    const rot = Number(this.s >> 59n) & 31;
+    const xorshiftedBig = ((this.s >> 18n) ^ this.s) >> 27n;
 
-    return ((xorShifted >>> rot) | (xorShifted << ((32 - rot) & 31))) >>> 0;
+    const rot = Number((this.s >> 59n) & 31n);
+
+    const xorshifted = Number(xorshiftedBig & 0xffffffffn) >>> 0;
+
+    const result =
+      (xorshifted >>> rot) | ((xorshifted << ((32 - rot) & 31)) >>> 0);
+    return result >>> 0;
   }
 
   next(): number {
@@ -42,8 +51,8 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   }
 
   setState(state: Pcg32GeneratorState): void {
-    this.s = state.s;
-    this.inc = state.inc;
+    this.s = BigInt(state.s) & MASK64;
+    this.inc = BigInt(state.inc) & MASK64;
   }
 }
 

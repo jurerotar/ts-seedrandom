@@ -110,16 +110,16 @@ class Xor4096Generator implements GeneratorInterface<Xor4096GeneratorState> {
 }
 
 export const xor4096: PRNGAlgorithm<Xor4096GeneratorState> = (seed, state) => {
-  const xor4096Generator = new Xor4096Generator(seed);
+  const generator = new Xor4096Generator(seed);
 
-  const prng = () => (xor4096Generator.next() >>> 0) / 0x100000000;
-  prng.quick = () => prng();
-  prng.double = () => xorDouble(xor4096Generator);
-  prng.int32 = () => xor4096Generator.next() | 0;
-  prng.state = () => xor4096Generator.state();
+  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  prng.quick = prng;
+  prng.double = () => xorDouble(generator);
+  prng.int32 = () => generator.next() | 0;
+  prng.state = () => generator.state();
 
   if (typeof state !== 'undefined') {
-    xor4096Generator.setState(state);
+    generator.setState(state);
   }
 
   return prng;

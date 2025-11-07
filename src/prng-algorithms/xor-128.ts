@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   Xor128GeneratorState,
 } from 'src/types';
-import { xorDouble } from 'src/utils';
+import { xorDouble } from '../utils';
 
 class Xor128Generator implements GeneratorInterface<Xor128GeneratorState> {
   x = 0;

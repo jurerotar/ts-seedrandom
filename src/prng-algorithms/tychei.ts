@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   TycheiGeneratorState,
 } from 'src/types';
-import { xorDouble } from 'src/utils';
+import { xorDouble } from '../utils';
 
 const createTycheiGenerator = (
   seed: string | number = Date.now(),

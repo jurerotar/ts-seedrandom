@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   XorwowGeneratorState,
 } from 'src/types';
-import { xorDouble } from 'src/utils';
+import { xorDouble } from '../utils';
 
 class XorwowGenerator implements GeneratorInterface<XorwowGeneratorState> {
   x = 0;

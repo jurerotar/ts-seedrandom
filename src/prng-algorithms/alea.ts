@@ -3,7 +3,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
 } from 'src/types';
-import { mash } from 'src/utils';
+import { mash } from '../utils';
 
 class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
   c = 1;

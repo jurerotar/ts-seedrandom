@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   Xor4096GeneratorState,
 } from 'src/types';
-import { xorDouble } from 'src/utils';
+import { xorDouble } from '../utils';
 
 class Xor4096Generator implements GeneratorInterface<Xor4096GeneratorState> {
   private w: number;

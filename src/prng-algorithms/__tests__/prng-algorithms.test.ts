@@ -12,7 +12,7 @@ import {
   prngXorWow,
   prngXoshiro128plus,
   prngXoshiro128plusplus,
-} from 'src/index';
+} from '../../index';
 
 const PRNGS = [
   { name: 'alea', prng: prngAlea },

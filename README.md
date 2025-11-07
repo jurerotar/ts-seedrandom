@@ -58,33 +58,36 @@ The following PRNG algorithms are available:
 
 You can import and use any of these algorithms in the same way as demonstrated in the usage examples above.
 
-### Algorithm comparison
+### Algorithm comparison (fastest → slowest)
 
-| Name                     | State Size | Speed 🏎️    | Quality 📊 | Period    | Notes                                    |
-| ------------------------ | ---------- | ------------ | ---------- | --------- | ---------------------------------------- |
-| `prngAlea`               | \~96 bits  | 🟢 Fast      | 🔸 OK      | \~2³²     | Simple and widely used in JS             |
-| `prngArc4`               | 2048 bits  | 🟡 Medium    | 🔸 OK      | \~2¹⁷⁰⁰   | Legacy cipher, good entropy, slowish     |
-| `prngTychei`             | 128 bits   | 🟢 Fast      | 🟡 Medium  | \~2⁶⁴     | Inspired by Marsaglia, fast and small    |
-| `prngXor128`             | 128 bits   | 🟢 Fast      | 🔸 OK      | \~2¹²⁸−1  | Basic Xorshift, outdated                 |
-| `prngXor4096`            | 4096 bits  | 🔴 Slow      | 🟡 Medium  | \~2⁴⁰⁹⁶−1 | Very large state                         |
-| `prngXorshift7`          | 224 bits   | 🟡 Medium    | 🟡 Medium  | \~2²²⁴    | Passes more tests than basic Xorshift    |
-| `prngXorwow`             | 160 bits   | 🟢 Fast      | 🟡 Medium  | \~2¹⁹²    | Used in older CUDA RNGs                  |
-| `prngMulberry32`         | 32 bits    | 🟢 Very fast | 🔸 OK      | \~2³²     | Very small, ultra fast                   |
-| `prngXoshiro128Plus`     | 128 bits   | 🟢 Fast      | 🟡 Good    | \~2¹²⁸−1  | Simple, good for games                   |
-| `prngXoshiro128PlusPlus` | 128 bits   | 🟢 Fast      | 🟢 Better  | \~2¹²⁸−1  | Improved output function                 |
-| `prngSplitMix64`         | 64 bits    | 🟢 Very fast | 🟢 High    | \~2⁶⁴     | Great for seeding other PRNGs            |
-| `prngPcg32`              | 64 bits    | 🟢 Fast      | 🟢 High    | \~2⁶⁴     | Compact, modern, good for simulation use |
+|               Name | State Size | Time for 1M iters (ms) | Speed (Mops/s) | Per-iter (ns) | × slower | Slower vs fastest |
+| -----------------: | :--------: | ---------------------: | -------------: | ------------: | -------: | ----------------: |
+|       `prngXor128` |  128 bits  |                   7.89 |         126.74 |          7.89 |     1.00 |              0.0% |
+|       `prngXorwow` |  160 bits  |                   8.87 |         112.74 |          8.87 |     1.12 |             12.4% |
+|      `prngXor4096` |  4096 bits |                  10.85 |          92.17 |         10.85 |     1.38 |             37.5% |
+|   `prngMulberry32` |   32 bits  |                  11.63 |          85.98 |         11.63 |     1.47 |             47.4% |
+|    `prngXorshift7` |  224 bits  |                  11.79 |          84.82 |         11.79 |     1.49 |             49.4% |
+|       `prngTychei` |  128 bits  |                  12.06 |          82.92 |         12.06 |     1.53 |             52.9% |
+|         `prngAlea` |  ~96 bits  |                  12.36 |          80.91 |         12.36 |     1.57 |             56.7% |
+|  `prngXoshiro128+` |  128 bits  |                  23.76 |          42.09 |         23.76 |     3.01 |            201.1% |
+| `prngXoshiro128++` |  128 bits  |                  36.41 |          27.46 |         36.41 |     4.61 |            361.5% |
+|         `prngArc4` |  2048 bits |                  88.30 |          11.33 |         88.30 |    11.19 |          1,019.1% |
+|        `prngPcg32` |   64 bits  |                 162.25 |           6.16 |        162.25 |    20.56 |          1,956.4% |
+|   `prngSplitMix64` |   64 bits  |                 709.11 |           1.41 |        709.11 |    89.87 |          8,887.5% |
 
-### Legend
+---
 
-- **Speed**:
-  - 🟢 Fast: Suitable for games, animation, UI
-  - 🟡 Medium: Acceptable overhead
-  - 🔴 Slow: Use only when large state is essential
+## Notes on the numbers
 
-- **Quality**:
-  - 🔸 OK: May fail strict tests (e.g., PractRand)
-  - 🟡 Medium: Passes basic uniformity/randomness
-  - 🟢 High: Strong statistical quality
+* **What I computed:**
+
+  * `Mops/s (million iters/sec) = 1000 / (time_ms)`
+  * `per-iteration (ns) ≈ time_ms`
+  * `Slower vs fastest (%) = (1 - (current_speed / fastest_speed)) * 100`.
+* **Test details / machine:** **Lenovo Legion 5 Pro 16ACH6H** (Ryzen 7 5800H — 8 cores / 16 threads, base ≈ 3.2 GHz, turbo ≈ 4.4 GHz, DDR4-3200 memory); Node.js v24.10.0.
+* **Why numbers vary:** JIT warm-up, Node version, single vs multi-thread scheduling, background load, and micro-optimizations in each PRNG implementation all affect timings. Use these as a relative ranking on this machine, not an absolute cross-platform benchmark.
+* You can replicate this exact table by running `npm run compare:performance"`
+
+
 
 

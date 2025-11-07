@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   Xoshiro128PlusPlusGeneratorState,
 } from 'src/types';
-import { rotl } from 'src/utils';
+import { rotl } from '../utils';
 
 class Xoshiro128PlusPlusGenerator
   implements GeneratorInterface<Xoshiro128PlusPlusGeneratorState>

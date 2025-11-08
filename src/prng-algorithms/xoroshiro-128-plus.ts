@@ -1,7 +1,7 @@
 import type {
   GeneratorInterface,
   PRNGAlgorithm,
-  Xoroshiro128PlusGeneratorState as Xoroshiro128Plus64State,
+  Xoroshiro128PlusGeneratorState,
 } from '../types';
 import { splitMix64Stream, fnv1a64, seedToBytes } from '../seed';
 
@@ -12,7 +12,9 @@ const rotl64 = (x: bigint, k: number): bigint => {
   return ((x << n) & MASK64) | (x >> (64n - n));
 };
 
-class Xoroshiro128Plus implements GeneratorInterface<Xoroshiro128Plus64State> {
+class Xoroshiro128Plus
+  implements GeneratorInterface<Xoroshiro128PlusGeneratorState>
+{
   s0: bigint;
   s1: bigint;
 
@@ -38,21 +40,21 @@ class Xoroshiro128Plus implements GeneratorInterface<Xoroshiro128Plus64State> {
     return Number(v >> 11n) / 9007199254740992; // top 53 bits
   }
 
-  state(): Xoroshiro128Plus64State {
+  state(): Xoroshiro128PlusGeneratorState {
     return {
       s0: this.s0 & MASK64,
       s1: this.s1 & MASK64,
     };
   }
 
-  setState(st: Xoroshiro128Plus64State): void {
+  setState(st: Xoroshiro128PlusGeneratorState): void {
     // The type is bigint in our definitions; ensure masking
     this.s0 = BigInt(st.s0) & MASK64;
     this.s1 = BigInt(st.s1) & MASK64;
   }
 }
 
-export const xoroshiro128plus64: PRNGAlgorithm<Xoroshiro128Plus64State> = (
+export const xoroshiro128plus: PRNGAlgorithm<Xoroshiro128PlusGeneratorState> = (
   seed,
   state,
 ) => {

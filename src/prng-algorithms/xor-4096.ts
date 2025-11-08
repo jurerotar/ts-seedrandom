@@ -2,7 +2,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   Xor4096GeneratorState,
-} from 'src/types';
+} from '../types';
 import { xorDouble } from '../utils';
 
 class Xor4096Generator implements GeneratorInterface<Xor4096GeneratorState> {
@@ -112,15 +112,15 @@ class Xor4096Generator implements GeneratorInterface<Xor4096GeneratorState> {
 export const xor4096: PRNGAlgorithm<Xor4096GeneratorState> = (seed, state) => {
   const generator = new Xor4096Generator(seed);
 
+  if (state) {
+    generator.setState(state);
+  }
+
   const prng = () => (generator.next() >>> 0) / 0x100000000;
   prng.quick = prng;
   prng.double = () => xorDouble(generator);
   prng.int32 = () => generator.next() | 0;
   prng.state = () => generator.state();
-
-  if (typeof state !== 'undefined') {
-    generator.setState(state);
-  }
 
   return prng;
 };

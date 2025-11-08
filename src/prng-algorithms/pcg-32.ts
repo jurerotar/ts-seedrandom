@@ -2,7 +2,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   Pcg32GeneratorState,
-} from 'src/types';
+} from '../types';
 
 const MASK64 = (1n << 64n) - 1n;
 const MULTIPLIER = 6364136223846793005n;
@@ -25,7 +25,7 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
     this.nextUInt32();
   }
 
-  private nextUInt32(): number {
+  nextUInt32(): number {
     this.s = (this.s * MULTIPLIER + this.inc) & MASK64;
 
     const xorshiftedBig = ((this.s >> 18n) ^ this.s) >> 27n;
@@ -67,7 +67,7 @@ export const pcg32: PRNGAlgorithm<Pcg32GeneratorState> = (seed, state) => {
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
-  prng.int32 = () => (generator.next() * 0x100000000) | 0;
+  prng.int32 = () => generator.nextUInt32() | 0;
   prng.state = () => generator.state();
 
   return prng;

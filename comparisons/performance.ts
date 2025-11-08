@@ -13,6 +13,11 @@ import {
   prngXorWow,
   prngXoshiro128plus,
   prngXoshiro128plusplus,
+  prngSplitMix32,
+  prngJsf32,
+  prngSfc32,
+  prngXoroshiro128plus64,
+  prngXoroshiro128ss,
 } from '../dist/index.js';
 
 const ITERATIONS = 1_000_000;
@@ -23,13 +28,18 @@ const STATE_SIZES: Record<string, string> = {
   tychei: '128 bits',
   mulberry32: '32 bits',
   splitmix64: '64 bits',
-  pcg32: '64 bits',
+  pcg32: '128 bits',
   xor128: '128 bits',
   xor4096: '4096 bits',
-  xorshift7: '224 bits',
-  xorwow: '160 bits',
+  xorshift7: '256 bits',
+  xorwow: '192 bits',
   'xoshiro128+': '128 bits',
   'xoshiro128++': '128 bits',
+  splitMix32: '32 bits',
+  sfc32: '128 bits',
+  jsf32: '128 bits',
+  xoroshiro128ss: '128 bits',
+  xoroshiro128plus64: '128 bits',
 };
 
 const PRNGS = [
@@ -45,6 +55,11 @@ const PRNGS = [
   { name: 'xorwow', prng: prngXorWow },
   { name: 'xoshiro128+', prng: prngXoshiro128plus },
   { name: 'xoshiro128++', prng: prngXoshiro128plusplus },
+  { name: 'splitMix32', prng: prngSplitMix32 },
+  { name: 'sfc32', prng: prngSfc32 },
+  { name: 'jsf32', prng: prngJsf32 },
+  { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
+  { name: 'xoroshiro128plus64', prng: prngXoroshiro128plus64 },
 ];
 
 const results: {

@@ -2,7 +2,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   XorShift7GeneratorState,
-} from 'src/types';
+} from '../types';
 import { xorDouble } from '../utils';
 
 const splitMix32 = (seed: number): (() => number) => {
@@ -99,15 +99,15 @@ export const xorShift7: PRNGAlgorithm<XorShift7GeneratorState> = (
 ) => {
   const generator = new XorShift7Generator(seed);
 
+  if (state) {
+    generator.setState(state);
+  }
+
   const prng = () => (generator.next() >>> 0) / 0x100000000;
   prng.quick = prng;
   prng.double = () => xorDouble(generator);
   prng.int32 = () => generator.next() | 0;
   prng.state = () => generator.state();
-
-  if (typeof state !== 'undefined') {
-    generator.setState(state);
-  }
 
   return prng;
 };

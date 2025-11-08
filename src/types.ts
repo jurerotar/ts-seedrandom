@@ -81,11 +81,40 @@ type PRNGFunctionName = 'quick' | 'double' | 'int32';
 export type PRNGFunction = (() => number) &
   Record<PRNGFunctionName, () => number>;
 
+export type SplitMix32GeneratorState = {
+  s: number;
+};
+
+export type Sfc32GeneratorState = {
+  a: number;
+  b: number;
+  c: number;
+  d: number;
+};
+
+export type Jsf32GeneratorState = {
+  a: number;
+  b: number;
+  c: number;
+  d: number;
+};
+
+export type Xoroshiro128StarStarGeneratorState = {
+  s0: bigint;
+  s1: bigint;
+};
+
+export type Xoroshiro128PlusGeneratorState = {
+  s0: bigint;
+  s1: bigint;
+};
+
 export type PRNGAlgorithmState =
   | AleaGeneratorState
   | Arc4GeneratorState
   | TycheiGeneratorState
   | Mulberry32GeneratorState
+  | SplitMix32GeneratorState
   | SplitMix64GeneratorState
   | Pcg32GeneratorState
   | Xoshiro128PlusGeneratorState
@@ -93,7 +122,11 @@ export type PRNGAlgorithmState =
   | Xor128GeneratorState
   | Xor4096GeneratorState
   | XorShift7GeneratorState
-  | XorwowGeneratorState;
+  | XorwowGeneratorState
+  | Sfc32GeneratorState
+  | Jsf32GeneratorState
+  | Xoroshiro128StarStarGeneratorState
+  | Xoroshiro128PlusGeneratorState;
 
 export type PRNGAlgorithm<State = PRNGAlgorithmState> = (
   seed?: string | number,

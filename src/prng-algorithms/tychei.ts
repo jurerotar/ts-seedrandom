@@ -2,7 +2,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   TycheiGeneratorState,
-} from 'src/types';
+} from '../types';
 import { xorDouble } from '../utils';
 
 const createTycheiGenerator = (
@@ -63,15 +63,15 @@ const createTycheiGenerator = (
 export const tychei: PRNGAlgorithm<TycheiGeneratorState> = (seed, state) => {
   const generator = createTycheiGenerator(seed);
 
+  if (state) {
+    generator.setState(state);
+  }
+
   const prng = () => (generator.next() >>> 0) / 0x100000000;
   prng.quick = prng;
   prng.double = () => xorDouble(generator);
   prng.int32 = () => generator.next() | 0;
   prng.state = () => generator.state();
-
-  if (typeof state !== 'undefined') {
-    generator.setState(state);
-  }
 
   return prng;
 };

@@ -2,7 +2,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   SplitMix64GeneratorState,
-} from 'src/types';
+} from '../types';
 
 class SplitMix64Generator
   implements GeneratorInterface<SplitMix64GeneratorState>
@@ -40,7 +40,7 @@ class SplitMix64Generator
   }
 
   setState({ s }: SplitMix64GeneratorState): void {
-    this.s = s;
+    this.s = s & BigInt('0xFFFFFFFFFFFFFFFF');
   }
 }
 
@@ -49,6 +49,7 @@ export const splitMix64: PRNGAlgorithm<SplitMix64GeneratorState> = (
   state,
 ) => {
   const generator = new SplitMix64Generator(seed);
+
   if (state) {
     generator.setState(state);
   }

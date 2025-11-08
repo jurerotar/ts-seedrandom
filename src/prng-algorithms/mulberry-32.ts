@@ -2,7 +2,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   Mulberry32GeneratorState,
-} from 'src/types';
+} from '../types';
 
 class Mulberry32Generator
   implements GeneratorInterface<Mulberry32GeneratorState>
@@ -41,6 +41,7 @@ export const mulberry32: PRNGAlgorithm<Mulberry32GeneratorState> = (
   state,
 ) => {
   const generator = new Mulberry32Generator(seed);
+
   if (state) {
     generator.setState(state);
   }

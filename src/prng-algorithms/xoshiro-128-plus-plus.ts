@@ -2,8 +2,9 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
   Xoshiro128PlusPlusGeneratorState,
-} from 'src/types';
-import { rotl } from 'src/utils';
+} from '../types';
+import { rotl } from '../utils';
+import { expand32From64 } from '../seed';
 
 class Xoshiro128PlusPlusGenerator
   implements GeneratorInterface<Xoshiro128PlusPlusGeneratorState>
@@ -14,29 +15,23 @@ class Xoshiro128PlusPlusGenerator
   s3: number;
 
   constructor(seed: string | number = Date.now()) {
-    const hash =
-      typeof seed === 'number'
-        ? seed.toString()
-        : [...seed.toString()].reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const s = expand32From64(seed, 4);
+    this.s0 = s[0] >>> 0;
+    this.s1 = s[1] >>> 0;
+    this.s2 = s[2] >>> 0;
+    this.s3 = s[3] >>> 0;
 
-    let sm = BigInt(hash);
-    const next = () => {
-      sm = (sm + 0x9e3779b97f4a7c15n) & BigInt('0xFFFFFFFFFFFFFFFF');
-      let z = sm;
-      z = (z ^ (z >> 30n)) * 0xbf58476d1ce4e5b9n;
-      z = (z ^ (z >> 27n)) * 0x94d049bb133111ebn;
-      z = z ^ (z >> 31n);
-      return Number(z & 0xffffffffn);
-    };
+    if ((this.s0 | this.s1 | this.s2 | this.s3) === 0) {
+      this.s0 = 1;
+    }
 
-    this.s0 = next();
-    this.s1 = next();
-    this.s2 = next();
-    this.s3 = next();
+    for (let i = 0; i < 16; i++) {
+      this.nextInt();
+    }
   }
 
-  next(): number {
-    const result = rotl((this.s1 * 5) >>> 0, 7) * 9;
+  nextInt(): number {
+    const result = (rotl((this.s1 * 5) >>> 0, 7) * 9) >>> 0;
 
     const t = (this.s1 << 9) >>> 0;
 
@@ -48,15 +43,19 @@ class Xoshiro128PlusPlusGenerator
     this.s2 ^= t;
     this.s3 = rotl(this.s3, 11);
 
-    return (result >>> 0) / 4294967296;
+    return result >>> 0;
+  }
+
+  next(): number {
+    return this.nextInt() / 4294967296;
   }
 
   state(): Xoshiro128PlusPlusGeneratorState {
     return {
-      s0: this.s0,
-      s1: this.s1,
-      s2: this.s2,
-      s3: this.s3,
+      s0: this.s0 >>> 0,
+      s1: this.s1 >>> 0,
+      s2: this.s2 >>> 0,
+      s3: this.s3 >>> 0,
     };
   }
 
@@ -81,7 +80,7 @@ export const xoshiro128plusplus: PRNGAlgorithm<
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
-  prng.int32 = () => (prng() * 0x100000000) | 0;
+  prng.int32 = () => (generator.nextInt?.() ?? prng() * 0x100000000) | 0;
   prng.state = () => generator.state();
 
   return prng;

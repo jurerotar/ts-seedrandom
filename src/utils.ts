@@ -1,4 +1,4 @@
-import type { GeneratorInterface, PRNGAlgorithmState } from 'src/types';
+import type { GeneratorInterface, PRNGAlgorithmState } from './types';
 
 export const mash = (): ((seed: string) => number) => {
   let n = 0xefc8249d;

@@ -3,7 +3,7 @@ import type {
   Arc4GeneratorState,
   GeneratorInterface,
   PRNGAlgorithm,
-} from 'src/types';
+} from '../types';
 
 const ARC4_START_DENOMINATION = 281474976710656;
 const ARC4_SIGNIFICANCE = 4503599627370496;
@@ -130,7 +130,14 @@ export const arc4: PRNGAlgorithm<Arc4GeneratorState> = (seed, state) => {
 
   const prng = () => generator.next();
   prng.quick = prng;
-  prng.double = () => generator.next();
+  prng.double = () => {
+    // 53-bit double using two 32-bit draws
+    const a = generator.g(4) >>> 0;
+    const b = generator.g(4) >>> 0;
+    const top = a >>> 5; // 27 bits
+    const bot = b >>> 6; // 26 bits
+    return (top * 67108864 + bot) / 9007199254740992; // 2^26, 2^53
+  };
   prng.int32 = () => generator.g(4) | 0;
   prng.state = () => generator.state();
 

@@ -12,7 +12,12 @@ import {
   prngXorWow,
   prngXoshiro128plus,
   prngXoshiro128plusplus,
-} from 'src/index';
+  prngSplitMix32,
+  prngSfc32,
+  prngJsf32,
+  prngXoroshiro128ss,
+  prngXoroshiro128plus,
+} from '../../index';
 
 const PRNGS = [
   { name: 'alea', prng: prngAlea },
@@ -27,6 +32,11 @@ const PRNGS = [
   { name: 'xorwow', prng: prngXorWow },
   { name: 'xoshiro128+', prng: prngXoshiro128plus },
   { name: 'xoshiro128++', prng: prngXoshiro128plusplus },
+  { name: 'splitMix32', prng: prngSplitMix32 },
+  { name: 'sfc32', prng: prngSfc32 },
+  { name: 'jsf32', prng: prngJsf32 },
+  { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
+  { name: 'xoroshiro128plus', prng: prngXoroshiro128plus },
 ];
 
 const PRNG_TABLE = PRNGS.map(({ name, prng }) => [name, prng] as const);
@@ -164,7 +174,7 @@ describe.for(PRNG_TABLE)('%s', ([, prng]) => {
     const b = prng('inter-seed');
 
     // produce interleaved sequence: a,b,a,b,a,b...
-    const interleaved = [];
+    const interleaved: number[] = [];
     for (let i = 0; i < 20; i++) {
       interleaved.push(a());
       interleaved.push(b());

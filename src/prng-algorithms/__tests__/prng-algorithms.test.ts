@@ -17,6 +17,7 @@ import {
   prngJsf32,
   prngXoroshiro128ss,
   prngXoroshiro128plus,
+  prngParkMiller,
 } from '../../index';
 
 const PRNGS = [
@@ -37,6 +38,7 @@ const PRNGS = [
   { name: 'jsf32', prng: prngJsf32 },
   { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
   { name: 'xoroshiro128plus', prng: prngXoroshiro128plus },
+  { name: 'parkMiller', prng: prngParkMiller },
 ];
 
 const PRNG_TABLE = PRNGS.map(({ name, prng }) => [name, prng] as const);

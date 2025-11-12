@@ -1,10 +1,16 @@
-import type { GeneratorInterface, PRNGAlgorithm, ParkMillerGeneratorState } from '../types';
+import type {
+  GeneratorInterface,
+  PRNGAlgorithm,
+  ParkMillerGeneratorState,
+} from '../types';
 
 // Park–Miller LCG (MINSTD), modulus m = 2147483647 (2^31 - 1), multiplier a = 48271
 const M = 2147483647; // 0x7fffffff
 const A = 48271;
 
-class ParkMillerGenerator implements GeneratorInterface<ParkMillerGeneratorState> {
+class ParkMillerGenerator
+  implements GeneratorInterface<ParkMillerGeneratorState>
+{
   s: number;
 
   constructor(seed: string | number = Date.now()) {
@@ -35,7 +41,7 @@ class ParkMillerGenerator implements GeneratorInterface<ParkMillerGeneratorState
 
   state(): ParkMillerGeneratorState {
     return {
-      s: this.s
+      s: this.s,
     };
   }
 
@@ -51,7 +57,10 @@ class ParkMillerGenerator implements GeneratorInterface<ParkMillerGeneratorState
   }
 }
 
-export const parkMiller: PRNGAlgorithm<ParkMillerGeneratorState> = (seed, state) => {
+export const parkMiller: PRNGAlgorithm<ParkMillerGeneratorState> = (
+  seed,
+  state,
+) => {
   const generator = new ParkMillerGenerator(seed);
 
   if (state) {
@@ -60,7 +69,8 @@ export const parkMiller: PRNGAlgorithm<ParkMillerGeneratorState> = (seed, state)
 
   const prng = () => generator.next();
   prng.quick = prng;
-  prng.double = () => prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
+  prng.double = () =>
+    prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
   prng.int32 = () => (prng() * 0x100000000) | 0;
   prng.state = () => generator.state();
 

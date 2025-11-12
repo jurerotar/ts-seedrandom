@@ -15,6 +15,7 @@ export { sfc32 as prngSfc32 } from './prng-algorithms/sfc-32';
 export { jsf32 as prngJsf32 } from './prng-algorithms/jsf-32';
 export { xoroshiro128ss as prngXoroshiro128ss } from './prng-algorithms/xoroshiro-128-star-star';
 export { xoroshiro128plus as prngXoroshiro128plus } from './prng-algorithms/xoroshiro-128-plus';
+export { parkMiller as prngParkMiller } from './prng-algorithms/park-miller';
 
 export type {
   PRNGAlgorithm,
@@ -34,6 +35,7 @@ export type {
   Xoshiro128PlusGeneratorState,
   Sfc32GeneratorState,
   Jsf32GeneratorState,
+  ParkMillerGeneratorState,
   Xoroshiro128StarStarGeneratorState,
   Xoroshiro128PlusGeneratorState,
 } from './types';

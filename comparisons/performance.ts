@@ -18,7 +18,8 @@ import {
   prngSfc32,
   prngXoroshiro128ss,
   prngXoroshiro128plus,
-} from '../dist/index.js';
+  prngParkMiller,
+} from '../dist/index.mjs';
 
 const ITERATIONS = 1_000_000;
 
@@ -40,6 +41,7 @@ const STATE_SIZES: Record<string, string> = {
   jsf32: '128 bits',
   xoroshiro128ss: '128 bits',
   xoroshiro128plus: '128 bits',
+  parkMiller: '31 bits',
 };
 
 const PRNGS = [
@@ -60,6 +62,7 @@ const PRNGS = [
   { name: 'jsf32', prng: prngJsf32 },
   { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
   { name: 'xoroshiro128plus', prng: prngXoroshiro128plus },
+  { name: 'parkMiller', prng: prngParkMiller },
 ];
 
 const results: {

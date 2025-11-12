@@ -99,6 +99,10 @@ export type Jsf32GeneratorState = {
   d: number;
 };
 
+export type ParkMillerGeneratorState = {
+  s: number;
+};
+
 export type Xoroshiro128StarStarGeneratorState = {
   s0: bigint;
   s1: bigint;
@@ -125,6 +129,7 @@ export type PRNGAlgorithmState =
   | XorwowGeneratorState
   | Sfc32GeneratorState
   | Jsf32GeneratorState
+  | ParkMillerGeneratorState
   | Xoroshiro128StarStarGeneratorState
   | Xoroshiro128PlusGeneratorState;
 

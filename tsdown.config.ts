@@ -1,6 +1,6 @@
-import { defineConfig } from 'tsup';
+import { defineConfig, type UserConfig } from 'tsdown';
 
-const tsupConfig: ReturnType<typeof defineConfig> = defineConfig({
+const tsupConfig: UserConfig = defineConfig({
   entry: ['src/index.ts'],
   target: 'esnext',
   format: ['esm'],

@@ -5,6 +5,10 @@ import type {
 } from '../types';
 import { expand32 } from '../seed';
 
+/**
+ * JSF32 (Jenkins' Small Fast) PRNG by Bob Jenkins.
+ * Reference: https://commons.apache.org/proper/commons-rng/commons-rng-core/apidocs/org/apache/commons/rng/core/source32/JenkinsSmallFast32.html
+ */
 class Jsf32Generator implements GeneratorInterface<Jsf32GeneratorState> {
   a: number;
   b: number;

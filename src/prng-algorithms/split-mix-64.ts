@@ -4,6 +4,10 @@ import type {
   SplitMix64GeneratorState,
 } from '../types';
 
+/**
+ * SplitMix64 PRNG by Guy Steele, Doug Lea, and Christine Flood.
+ * Reference: https://rosettacode.org/wiki/Pseudo-random_numbers/Splitmix64
+ */
 class SplitMix64Generator
   implements GeneratorInterface<SplitMix64GeneratorState>
 {

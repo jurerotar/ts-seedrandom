@@ -12,6 +12,11 @@ const ARC4_OVERFLOW = 9007199254740992n;
 type ARC4GeneratorInterface = GeneratorInterface<Arc4GeneratorState> &
   Arc4GeneratorExtraMethods;
 
+/**
+ * ARC4 PRNG (Alleged RC4).
+ * Reference: https://en.wikipedia.org/wiki/RC4
+ * Reference: https://datatracker.ietf.org/doc/html/rfc6229
+ */
 class ARC4Generator implements ARC4GeneratorInterface {
   i = 0;
   j = 0;

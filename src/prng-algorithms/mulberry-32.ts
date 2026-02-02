@@ -4,6 +4,10 @@ import type {
   Mulberry32GeneratorState,
 } from '../types';
 
+/**
+ * Mulberry32 PRNG by David Stafford.
+ * Reference: https://gist.github.com/tommyettinger/46a874533244883189143505d203312c
+ */
 class Mulberry32Generator
   implements GeneratorInterface<Mulberry32GeneratorState>
 {

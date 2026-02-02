@@ -5,6 +5,10 @@ import type {
 } from '../types';
 import { expand32 } from '../seed';
 
+/**
+ * SFC32 (Small Fast Chaotic) PRNG by Chris Doty-Humphrey.
+ * Reference: https://github.com/bryc/code/blob/master/jshash/PRNGs.md
+ */
 class Sfc32Generator implements GeneratorInterface<Sfc32GeneratorState> {
   a: number;
   b: number;

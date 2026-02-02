@@ -7,6 +7,10 @@ import type {
 const MASK64 = (1n << 64n) - 1n;
 const MULTIPLIER = 6364136223846793005n;
 
+/**
+ * PCG32 PRNG by Melissa O'Neill.
+ * Reference: https://www.pcg-random.org/
+ */
 class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   s: bigint;
   inc: bigint;

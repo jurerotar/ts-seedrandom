@@ -5,6 +5,10 @@ import type {
 } from '../types';
 import { mash } from '../utils';
 
+/**
+ * Alea PRNG by Johannes Baagøe.
+ * Reference: https://github.com/macmcmeans/aleaPRNG
+ */
 class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
   c = 1;
   s0;

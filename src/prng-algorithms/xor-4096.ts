@@ -5,6 +5,10 @@ import type {
 } from '../types';
 import { xorDouble } from '../utils';
 
+/**
+ * Xor4096 PRNG by Richard Brent.
+ * Reference: https://github.com/davidbau/seedrandom
+ */
 class Xor4096Generator implements GeneratorInterface<Xor4096GeneratorState> {
   private w: number;
   private X: number[];

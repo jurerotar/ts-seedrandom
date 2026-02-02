@@ -12,6 +12,10 @@ const rotl64 = (x: bigint, k: number): bigint => {
   return ((x << n) & MASK64) | (x >> (64n - n));
 };
 
+/**
+ * Xoshiro128** (xoshiro128starstar) PRNG by David Blackman and Sebastiano Vigna.
+ * Reference: https://prng.di.unimi.it/xoshiro128starstar.c
+ */
 class Xoroshiro128StarStar
   implements GeneratorInterface<Xoroshiro128StarStarGeneratorState>
 {

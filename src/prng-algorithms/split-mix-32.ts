@@ -2,6 +2,10 @@ import type { GeneratorInterface, PRNGAlgorithm } from '../types';
 
 export type SplitMix32GeneratorState = { s: number };
 
+/**
+ * SplitMix32 PRNG.
+ * Reference: https://github.com/bryc/code/blob/master/jshash/PRNGs.md
+ */
 class SplitMix32Generator
   implements GeneratorInterface<SplitMix32GeneratorState>
 {

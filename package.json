@@ -1,6 +1,6 @@
 {
   "name": "ts-seedrandom",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "type": "module",
   "description": "Seeded random number generators for TypeScript",
   "author": "Jure Rotar <hello@jurerotar.com>",

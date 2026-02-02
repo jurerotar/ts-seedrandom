@@ -8,6 +8,11 @@ import type {
 const M = 2147483647; // 0x7fffffff
 const A = 48271;
 
+/**
+ * Park-Miller LCG (MINSTD) PRNG.
+ * Reference: https://en.wikipedia.org/wiki/Lehmer_random_number_generator
+ * Reference: https://www.firstpr.com.au/dsp/rand31/
+ */
 class ParkMillerGenerator
   implements GeneratorInterface<ParkMillerGeneratorState>
 {

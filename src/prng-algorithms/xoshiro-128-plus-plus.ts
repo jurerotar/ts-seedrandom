@@ -6,6 +6,10 @@ import type {
 import { rotl } from '../utils';
 import { expand32From64 } from '../seed';
 
+/**
+ * Xoshiro128++ PRNG by David Blackman and Sebastiano Vigna.
+ * Reference: https://prng.di.unimi.it/xoshiro128plusplus.c
+ */
 class Xoshiro128PlusPlusGenerator
   implements GeneratorInterface<Xoshiro128PlusPlusGeneratorState>
 {

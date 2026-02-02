@@ -5,6 +5,10 @@ import type {
 } from '../types';
 import { xorDouble } from '../utils';
 
+/**
+ * Tyche-i PRNG by Samuel Neves and Filipe Araujo.
+ * Reference: https://link.springer.com/chapter/10.1007/978-3-642-31464-3_10
+ */
 const createTycheiGenerator = (
   seed: string | number = Date.now(),
 ): GeneratorInterface<TycheiGeneratorState> => {
@@ -20,7 +24,7 @@ const createTycheiGenerator = (
     a = (a - b) | 0;
     b = (b << 20) ^ (b >>> 12) ^ c;
     c = (c - d) | 0;
-    d = (d << 16) ^ (c >>> 16) ^ a;
+    d = ((d >>> 16) | (d << 16)) ^ a;
     a = (a - b) | 0;
 
     return a;

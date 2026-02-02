@@ -6,6 +6,12 @@ import type {
 import { xorDouble } from '../utils';
 import { nonZeroVector32 } from '../seed';
 
+/**
+ * Xorshift128 PRNG by George Marsaglia.
+ * Reference: https://doi.org/10.18637/jss.v008.i14
+ * Reference: https://www.semanticscholar.org/paper/Xorshift-RNGs-RNGs-Marsaglia/2f8b197c3b34d86478f1eaed1fb61f5b1c556fa5
+ * Reference: https://vigna.di.unimi.it/ftp/papers/xorshift.pdf
+ */
 class Xor128Generator implements GeneratorInterface<Xor128GeneratorState> {
   x = 0;
   y = 0;

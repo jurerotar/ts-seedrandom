@@ -20,6 +20,10 @@ const splitMix32 = (seed: number): (() => number) => {
   };
 };
 
+/**
+ * Xorshift7 PRNG by François Panneton and Pierre L'Ecuyer.
+ * Reference: https://www.iro.umontreal.ca/~lecuyer/myftp/papers/xorshift.pdf
+ */
 class XorShift7Generator
   implements GeneratorInterface<XorShift7GeneratorState>
 {

@@ -6,6 +6,10 @@ import type {
 import { xorDouble } from '../utils';
 import { nonZeroVector32 } from '../seed';
 
+/**
+ * Xorwow PRNG by George Marsaglia.
+ * Reference: https://en.wikipedia.org/wiki/Xorshift#xorwow
+ */
 class XorwowGenerator implements GeneratorInterface<XorwowGeneratorState> {
   x = 0;
   y = 0;

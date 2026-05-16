@@ -35,16 +35,17 @@
     "lint": "npx @biomejs/biome lint --fix",
     "format:check": "npx @biomejs/biome format",
     "format": "npx @biomejs/biome format --write",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsgo",
     "test": "vitest",
     "compare:performance": "npm run build && node comparisons/performance.ts",
     "prepublishOnly": "npm run build",
     "release": "npm publish --access public"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
-    "tsdown": "0.20.1",
-    "typescript": "5.9.3",
-    "vitest": "4.0.18"
+    "@biomejs/biome": "2.4.15",
+    "tsdown": "0.22.0",
+    "typescript": "6.0.3",
+    "@typescript/native-preview": "7.0.0-dev.20260516.1",
+    "vitest": "4.1.6"
   }
 }

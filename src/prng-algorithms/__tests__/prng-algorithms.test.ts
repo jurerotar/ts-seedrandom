@@ -20,6 +20,10 @@ import {
   prngXoroshiro128ss,
   prngXoroshiro128plus,
   prngParkMiller,
+  prngLcg32,
+  prngXorShift32,
+  prngXorShift64star,
+  prngMiddleSquareWeyl,
 } from '../../index';
 
 const PRNGS = [
@@ -43,6 +47,10 @@ const PRNGS = [
   { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
   { name: 'xoroshiro128plus', prng: prngXoroshiro128plus },
   { name: 'parkMiller', prng: prngParkMiller },
+  { name: 'lcg32', prng: prngLcg32 },
+  { name: 'xorshift32', prng: prngXorShift32 },
+  { name: 'xorshift64*', prng: prngXorShift64star },
+  { name: 'middleSquareWeyl', prng: prngMiddleSquareWeyl },
 ];
 
 const PRNG_TABLE = PRNGS.map(({ name, prng }) => [name, prng] as const);
@@ -304,6 +312,43 @@ describe('reference vectors', () => {
       uint64ToDouble(0x000000005a007080n),
       uint64ToDouble(0x10e0000000009d80n),
       uint64ToDouble(0x10e0b61ce1009d80n),
+    ]);
+  });
+
+  test('small legacy generators match their core recurrences', () => {
+    const lcg = prngLcg32('ignored', { s: 0 });
+    const xorshift = prngXorShift32('ignored', { s: 1 });
+
+    expect(Array.from({ length: 5 }, () => toUint32(lcg.int32()))).toEqual([
+      0x3c6ef35f, 0x47502932, 0xd1ccf6e9, 0xaaf95334, 0x6252e503,
+    ]);
+
+    expect(Array.from({ length: 5 }, () => toUint32(xorshift.int32()))).toEqual(
+      [0x00042021, 0x04080601, 0x9dcca8c5, 0x1255994f, 0x8ef917d1],
+    );
+  });
+
+  test('xorshift64* matches the scrambled 64-bit recurrence', () => {
+    const g = prngXorShift64star('ignored', { s: 1n });
+
+    expect(Array.from({ length: 5 }, () => g())).toEqual([
+      uint64ToDouble(0x47e4ce4b896cdd1dn),
+      uint64ToDouble(0xabcfa6a8e079651dn),
+      uint64ToDouble(0xb9d10d8feb731f57n),
+      uint64ToDouble(0x4db418a0bb1b019dn),
+      uint64ToDouble(0x0e6199b04d5aa600n),
+    ]);
+  });
+
+  test('middle-square Weyl matches the rotate-middle recurrence', () => {
+    const g = prngMiddleSquareWeyl('ignored', {
+      x: 1n,
+      w: 0n,
+      s: 0xb5ad4eceda1ce2a9n,
+    });
+
+    expect(Array.from({ length: 5 }, () => toUint32(g.int32()))).toEqual([
+      0xb5ad4ece, 0x4aa985f8, 0x05d634c2, 0xffc8bdf3, 0x3bdd4ecd,
     ]);
   });
 });

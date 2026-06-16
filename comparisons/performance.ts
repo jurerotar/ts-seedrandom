@@ -21,6 +21,10 @@ import {
   prngXoroshiro128ss,
   prngXoroshiro128plus,
   prngParkMiller,
+  prngLcg32,
+  prngXorShift32,
+  prngXorShift64star,
+  prngMiddleSquareWeyl,
 } from '../dist/index.mjs';
 
 const ITERATIONS = 1_000_000;
@@ -46,6 +50,10 @@ const STATE_SIZES: Record<string, string> = {
   xoroshiro128ss: '128 bits',
   xoroshiro128plus: '128 bits',
   parkMiller: '31 bits',
+  lcg32: '32 bits',
+  xorshift32: '32 bits',
+  'xorshift64*': '64 bits',
+  middleSquareWeyl: '192 bits',
 };
 
 const PRNGS = [
@@ -69,6 +77,10 @@ const PRNGS = [
   { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
   { name: 'xoroshiro128plus', prng: prngXoroshiro128plus },
   { name: 'parkMiller', prng: prngParkMiller },
+  { name: 'lcg32', prng: prngLcg32 },
+  { name: 'xorshift32', prng: prngXorShift32 },
+  { name: 'xorshift64*', prng: prngXorShift64star },
+  { name: 'middleSquareWeyl', prng: prngMiddleSquareWeyl },
 ];
 
 const results: {

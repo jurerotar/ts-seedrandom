@@ -18,6 +18,10 @@ export { jsf32 as prngJsf32 } from './prng-algorithms/jsf-32';
 export { xoroshiro128ss as prngXoroshiro128ss } from './prng-algorithms/xoroshiro-128-star-star';
 export { xoroshiro128plus as prngXoroshiro128plus } from './prng-algorithms/xoroshiro-128-plus';
 export { parkMiller as prngParkMiller } from './prng-algorithms/park-miller';
+export { lcg32 as prngLcg32 } from './prng-algorithms/lcg-32';
+export { xorshift32 as prngXorShift32 } from './prng-algorithms/xorshift-32';
+export { xorshift64star as prngXorShift64star } from './prng-algorithms/xorshift-64-star';
+export { middleSquareWeyl as prngMiddleSquareWeyl } from './prng-algorithms/middle-square-weyl';
 
 export type {
   PRNGAlgorithm,
@@ -42,4 +46,8 @@ export type {
   ParkMillerGeneratorState,
   Xoroshiro128StarStarGeneratorState,
   Xoroshiro128PlusGeneratorState,
+  Lcg32GeneratorState,
+  XorShift32GeneratorState,
+  XorShift64StarGeneratorState,
+  MiddleSquareWeylGeneratorState,
 } from './types';

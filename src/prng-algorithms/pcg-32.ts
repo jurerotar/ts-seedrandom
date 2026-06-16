@@ -18,7 +18,7 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   constructor(seed: string | number = Date.now()) {
     const seedNum =
       typeof seed === 'number'
-        ? BigInt(seed)
+        ? BigInt(Math.trunc(seed))
         : BigInt([...seed.toString()].reduce((a, c) => a + c.charCodeAt(0), 0));
 
     this.s = 0n;
@@ -30,11 +30,12 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   }
 
   nextUInt32(): number {
-    this.s = (this.s * MULTIPLIER + this.inc) & MASK64;
+    const oldState = this.s;
+    this.s = (oldState * MULTIPLIER + (this.inc | 1n)) & MASK64;
 
-    const xorshiftedBig = ((this.s >> 18n) ^ this.s) >> 27n;
+    const xorshiftedBig = ((oldState >> 18n) ^ oldState) >> 27n;
 
-    const rot = Number((this.s >> 59n) & 31n);
+    const rot = Number((oldState >> 59n) & 31n);
 
     const xorshifted = Number(xorshiftedBig & 0xffffffffn) >>> 0;
 

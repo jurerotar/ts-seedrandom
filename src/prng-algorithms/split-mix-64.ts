@@ -3,10 +3,11 @@ import type {
   PRNGAlgorithm,
   SplitMix64GeneratorState,
 } from '../types';
+import { MASK_64, uint64ToDouble } from '../utils';
 
 /**
  * SplitMix64 PRNG by Guy Steele, Doug Lea, and Christine Flood.
- * Reference: https://rosettacode.org/wiki/Pseudo-random_numbers/Splitmix64
+ * Reference: https://prng.di.unimi.it/splitmix64.c
  */
 class SplitMix64Generator
   implements GeneratorInterface<SplitMix64GeneratorState>
@@ -20,21 +21,19 @@ class SplitMix64Generator
         : BigInt(
             [...seed.toString()].reduce((acc, c) => acc + c.charCodeAt(0), 0),
           );
-    this.s = seedNum & BigInt('0xFFFFFFFFFFFFFFFF');
+    this.s = seedNum & MASK_64;
   }
 
-  private nextBigInt(): bigint {
-    this.s =
-      (this.s + BigInt('0x9E3779B97F4A7C15')) & BigInt('0xFFFFFFFFFFFFFFFF');
+  nextUint64(): bigint {
+    this.s = (this.s + 0x9e3779b97f4a7c15n) & MASK_64;
     let z = this.s;
-    z = (z ^ (z >> 30n)) * BigInt('0xBF58476D1CE4E5B9');
-    z = (z ^ (z >> 27n)) * BigInt('0x94D049BB133111EB');
-    return z ^ (z >> 31n);
+    z = ((z ^ (z >> 30n)) * 0xbf58476d1ce4e5b9n) & MASK_64;
+    z = ((z ^ (z >> 27n)) * 0x94d049bb133111ebn) & MASK_64;
+    return (z ^ (z >> 31n)) & MASK_64;
   }
 
   next(): number {
-    const value = this.nextBigInt() & BigInt('0xFFFFFFFFFFFFFFFF');
-    return Number(value >> 11n) / 9007199254740992; // Scale to [0, 1) using 53 bits
+    return uint64ToDouble(this.nextUint64());
   }
 
   state(): SplitMix64GeneratorState {
@@ -44,7 +43,7 @@ class SplitMix64Generator
   }
 
   setState({ s }: SplitMix64GeneratorState): void {
-    this.s = s & BigInt('0xFFFFFFFFFFFFFFFF');
+    this.s = s & MASK_64;
   }
 }
 
@@ -60,9 +59,8 @@ export const splitMix64: PRNGAlgorithm<SplitMix64GeneratorState> = (
 
   const prng = () => generator.next();
   prng.quick = prng;
-  prng.double = () =>
-    prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
-  prng.int32 = () => (generator.next() * 0x100000000) | 0;
+  prng.double = prng;
+  prng.int32 = () => Number(generator.nextUint64() & 0xffffffffn) | 0;
   prng.state = () => generator.state();
 
   return prng;

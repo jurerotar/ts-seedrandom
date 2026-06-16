@@ -12,6 +12,8 @@ import {
   prngXorWow,
   prngXoshiro128plus,
   prngXoshiro128plusplus,
+  prngXoshiro256plusplus,
+  prngXoshiro256starstar,
   prngSplitMix32,
   prngSfc32,
   prngJsf32,
@@ -33,6 +35,8 @@ const PRNGS = [
   { name: 'xorwow', prng: prngXorWow },
   { name: 'xoshiro128+', prng: prngXoshiro128plus },
   { name: 'xoshiro128++', prng: prngXoshiro128plusplus },
+  { name: 'xoshiro256++', prng: prngXoshiro256plusplus },
+  { name: 'xoshiro256**', prng: prngXoshiro256starstar },
   { name: 'splitMix32', prng: prngSplitMix32 },
   { name: 'sfc32', prng: prngSfc32 },
   { name: 'jsf32', prng: prngJsf32 },
@@ -209,5 +213,97 @@ describe.for(PRNG_TABLE)('%s', ([, prng]) => {
     const seqA = Array.from({ length: 10 }, () => g1());
     const seqB = Array.from({ length: 10 }, () => g2.quick());
     expect(seqB).toEqual(seqA);
+  });
+});
+
+const toUint32 = (value: number) => value >>> 0;
+
+const uint64ToDouble = (value: bigint) =>
+  Number(value >> 11n) / 9007199254740992;
+
+describe('reference vectors', () => {
+  test('pcg32 uses the PCG XSH-RR output function from old state', () => {
+    const g = prngPcg32('ignored', { s: 42n, inc: 109n });
+
+    expect(Array.from({ length: 5 }, () => toUint32(g.int32()))).toEqual([
+      0x00000000, 0x0c855c84, 0x0bde36a5, 0x49dd4da9, 0x92dc7b03,
+    ]);
+  });
+
+  test('splitmix64 matches the canonical 64-bit mix sequence', () => {
+    const g = prngSplitMix64('ignored', { s: 0n });
+
+    expect(Array.from({ length: 5 }, () => g())).toEqual([
+      uint64ToDouble(0xe220a8397b1dcdafn),
+      uint64ToDouble(0x6e789e6aa1b965f4n),
+      uint64ToDouble(0x06c45d188009454fn),
+      uint64ToDouble(0xf88bb8a8724c81ecn),
+      uint64ToDouble(0x1b39896a51a8749bn),
+    ]);
+  });
+
+  test('xoshiro128++ uses the plus-plus output scrambler', () => {
+    const g = prngXoshiro128plusplus('ignored', {
+      s0: 1,
+      s1: 2,
+      s2: 3,
+      s3: 4,
+    });
+
+    expect(Array.from({ length: 5 }, () => toUint32(g.int32()))).toEqual([
+      0x00000281, 0x00180387, 0xc0183387, 0xd1ae3b02, 0x31e2310a,
+    ]);
+  });
+
+  test('xoroshiro128 variants match published state transitions', () => {
+    const plus = prngXoroshiro128plus('ignored', { s0: 1n, s1: 2n });
+    const starStar = prngXoroshiro128ss('ignored', { s0: 1n, s1: 2n });
+
+    expect(Array.from({ length: 5 }, () => plus())).toEqual([
+      uint64ToDouble(0x0000000000000003n),
+      uint64ToDouble(0x0000006001030003n),
+      uint64ToDouble(0x20c102c302000c03n),
+      uint64ToDouble(0x810180670d23ad61n),
+      uint64ToDouble(0x26d13a4941333a42n),
+    ]);
+
+    expect(Array.from({ length: 5 }, () => starStar())).toEqual([
+      uint64ToDouble(0x0000000000001680n),
+      uint64ToDouble(0x00000016c3804380n),
+      uint64ToDouble(0x86b5b3ad00004380n),
+      uint64ToDouble(0x800044a4cd1497b2n),
+      uint64ToDouble(0x73fe9d66c77d08f6n),
+    ]);
+  });
+
+  test('xoshiro256 variants match published state transitions', () => {
+    const plusPlus = prngXoshiro256plusplus('ignored', {
+      s0: 1n,
+      s1: 2n,
+      s2: 3n,
+      s3: 4n,
+    });
+    const starStar = prngXoshiro256starstar('ignored', {
+      s0: 1n,
+      s1: 2n,
+      s2: 3n,
+      s3: 4n,
+    });
+
+    expect(Array.from({ length: 5 }, () => plusPlus())).toEqual([
+      uint64ToDouble(0x0000000002800001n),
+      uint64ToDouble(0x0000000003800067n),
+      uint64ToDouble(0x000cc00003800067n),
+      uint64ToDouble(0x000cc201994400b2n),
+      uint64ToDouble(0x8012a2019ac433cdn),
+    ]);
+
+    expect(Array.from({ length: 5 }, () => starStar())).toEqual([
+      uint64ToDouble(0x0000000000002d00n),
+      uint64ToDouble(0x0000000000000000n),
+      uint64ToDouble(0x000000005a007080n),
+      uint64ToDouble(0x10e0000000009d80n),
+      uint64ToDouble(0x10e0b61ce1009d80n),
+    ]);
   });
 });

@@ -10,6 +10,8 @@ export { mulberry32 as prngMulberry32 } from './prng-algorithms/mulberry-32';
 export { splitMix64 as prngSplitMix64 } from './prng-algorithms/split-mix-64';
 export { xoshiro128plus as prngXoshiro128plus } from './prng-algorithms/xoshiro-128-plus';
 export { xoshiro128plusplus as prngXoshiro128plusplus } from './prng-algorithms/xoshiro-128-plus-plus';
+export { xoshiro256plusplus as prngXoshiro256plusplus } from './prng-algorithms/xoshiro-256-plus-plus';
+export { xoshiro256starstar as prngXoshiro256starstar } from './prng-algorithms/xoshiro-256-star-star';
 export { splitMix32 as prngSplitMix32 } from './prng-algorithms/split-mix-32';
 export { sfc32 as prngSfc32 } from './prng-algorithms/sfc-32';
 export { jsf32 as prngJsf32 } from './prng-algorithms/jsf-32';
@@ -33,6 +35,8 @@ export type {
   SplitMix64GeneratorState,
   Xoshiro128PlusPlusGeneratorState,
   Xoshiro128PlusGeneratorState,
+  Xoshiro256PlusPlusGeneratorState,
+  Xoshiro256StarStarGeneratorState,
   Sfc32GeneratorState,
   Jsf32GeneratorState,
   ParkMillerGeneratorState,

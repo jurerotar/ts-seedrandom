@@ -63,6 +63,20 @@ export type Xoshiro128PlusPlusGeneratorState = {
   s3: number;
 };
 
+export type Xoshiro256PlusPlusGeneratorState = {
+  s0: bigint;
+  s1: bigint;
+  s2: bigint;
+  s3: bigint;
+};
+
+export type Xoshiro256StarStarGeneratorState = {
+  s0: bigint;
+  s1: bigint;
+  s2: bigint;
+  s3: bigint;
+};
+
 export type Mulberry32GeneratorState = {
   s: number;
 };
@@ -123,6 +137,8 @@ export type PRNGAlgorithmState =
   | Pcg32GeneratorState
   | Xoshiro128PlusGeneratorState
   | Xoshiro128PlusPlusGeneratorState
+  | Xoshiro256PlusPlusGeneratorState
+  | Xoshiro256StarStarGeneratorState
   | Xor128GeneratorState
   | Xor4096GeneratorState
   | XorShift7GeneratorState

@@ -35,7 +35,7 @@ class Xoshiro128PlusPlusGenerator
   }
 
   nextInt(): number {
-    const result = (rotl((this.s1 * 5) >>> 0, 7) * 9) >>> 0;
+    const result = (rotl((this.s0 + this.s3) >>> 0, 7) + this.s0) >>> 0;
 
     const t = (this.s1 << 9) >>> 0;
 

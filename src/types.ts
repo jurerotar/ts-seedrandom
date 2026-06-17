@@ -49,6 +49,14 @@ export type XorwowGeneratorState = {
   d: number;
 };
 
+export type XorShift32GeneratorState = {
+  s: number;
+};
+
+export type XorShift64StarGeneratorState = {
+  s: bigint;
+};
+
 export type Xoshiro128PlusGeneratorState = {
   s0: number;
   s1: number;
@@ -61,6 +69,20 @@ export type Xoshiro128PlusPlusGeneratorState = {
   s1: number;
   s2: number;
   s3: number;
+};
+
+export type Xoshiro256PlusPlusGeneratorState = {
+  s0: bigint;
+  s1: bigint;
+  s2: bigint;
+  s3: bigint;
+};
+
+export type Xoshiro256StarStarGeneratorState = {
+  s0: bigint;
+  s1: bigint;
+  s2: bigint;
+  s3: bigint;
 };
 
 export type Mulberry32GeneratorState = {
@@ -103,6 +125,16 @@ export type ParkMillerGeneratorState = {
   s: number;
 };
 
+export type Lcg32GeneratorState = {
+  s: number;
+};
+
+export type MiddleSquareWeylGeneratorState = {
+  x: bigint;
+  w: bigint;
+  s: bigint;
+};
+
 export type Xoroshiro128StarStarGeneratorState = {
   s0: bigint;
   s1: bigint;
@@ -123,13 +155,19 @@ export type PRNGAlgorithmState =
   | Pcg32GeneratorState
   | Xoshiro128PlusGeneratorState
   | Xoshiro128PlusPlusGeneratorState
+  | Xoshiro256PlusPlusGeneratorState
+  | Xoshiro256StarStarGeneratorState
   | Xor128GeneratorState
   | Xor4096GeneratorState
+  | XorShift32GeneratorState
+  | XorShift64StarGeneratorState
   | XorShift7GeneratorState
   | XorwowGeneratorState
   | Sfc32GeneratorState
   | Jsf32GeneratorState
   | ParkMillerGeneratorState
+  | Lcg32GeneratorState
+  | MiddleSquareWeylGeneratorState
   | Xoroshiro128StarStarGeneratorState
   | Xoroshiro128PlusGeneratorState;
 

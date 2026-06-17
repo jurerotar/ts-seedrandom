@@ -36,3 +36,14 @@ export const xorDouble = <T = PRNGAlgorithmState>(
 export const rotl = (x: number, k: number): number => {
   return ((x << k) | (x >>> (32 - k))) >>> 0;
 };
+
+export const MASK_64 = 0xffffffffffffffffn;
+
+export const rotl64 = (x: bigint, k: number): bigint => {
+  const n = BigInt(k & 63);
+  return ((x << n) | (x >> (64n - n))) & MASK_64;
+};
+
+export const uint64ToDouble = (x: bigint): number => {
+  return Number((x & MASK_64) >> 11n) / 9007199254740992;
+};

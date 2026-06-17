@@ -1,6 +1,6 @@
 {
   "name": "ts-seedrandom",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "type": "module",
   "description": "Seeded random number generators for TypeScript",
   "author": "Jure Rotar <hello@jurerotar.com>",
@@ -42,10 +42,10 @@
     "release": "npm publish --access public"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.15",
-    "tsdown": "0.22.0",
+    "@biomejs/biome": "2.5.0",
+    "tsdown": "0.22.3",
     "typescript": "6.0.3",
-    "@typescript/native-preview": "7.0.0-dev.20260516.1",
-    "vitest": "4.1.6"
+    "@typescript/native-preview": "7.0.0-dev.20260617.2",
+    "vitest": "4.1.9"
   }
 }

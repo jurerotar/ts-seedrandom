@@ -3,6 +3,7 @@ import type {
   Lcg32GeneratorState,
   PRNGAlgorithm,
 } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 import { expand32 } from '../seed';
 
 const MULTIPLIER = 1664525;
@@ -26,7 +27,7 @@ class Lcg32Generator implements GeneratorInterface<Lcg32GeneratorState> {
   }
 
   next(): number {
-    return this.nextUint32() / 4294967296;
+    return this.nextUint32() * UINT32_TO_DOUBLE;
   }
 
   state(): Lcg32GeneratorState {
@@ -47,7 +48,7 @@ export const lcg32: PRNGAlgorithm<Lcg32GeneratorState> = (seed, state) => {
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => generator.nextUint32() * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;

@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   TycheiGeneratorState,
 } from '../types';
-import { xorDouble } from '../utils';
+import { UINT32_TO_DOUBLE, xorDouble } from '../utils';
 
 /**
  * Tyche-i PRNG by Samuel Neves and Filipe Araujo.
@@ -46,7 +46,7 @@ const createTycheiGenerator = (
 
   if (Number.isInteger(seed)) {
     const integerSeed = seed as number;
-    a = (integerSeed / 0x100000000) | 0;
+    a = (integerSeed * UINT32_TO_DOUBLE) | 0;
     b = integerSeed | 0;
   }
 
@@ -71,7 +71,7 @@ export const tychei: PRNGAlgorithm<TycheiGeneratorState> = (seed, state) => {
     generator.setState(state);
   }
 
-  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  const prng = () => (generator.next() >>> 0) * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () => xorDouble(generator);
   prng.int32 = () => generator.next() | 0;

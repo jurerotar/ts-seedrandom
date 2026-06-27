@@ -1,5 +1,8 @@
 import type { GeneratorInterface, PRNGAlgorithmState } from './types';
 
+export const UINT32_TO_DOUBLE = 2.3283064365386963e-10; // 2^-32
+const UINT53_TO_DOUBLE = 1.1102230246251565e-16; // 2^-53
+
 export const mash = (): ((seed: string) => number) => {
   let n = 0xefc8249d;
 
@@ -14,7 +17,7 @@ export const mash = (): ((seed: string) => number) => {
       h -= n;
       n += h * 0x100000000; // 2^32
     }
-    return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+    return (n >>> 0) * UINT32_TO_DOUBLE;
   };
 };
 
@@ -27,7 +30,7 @@ export const xorDouble = <T = PRNGAlgorithmState>(
 
   do {
     top = generator.next() >>> 11;
-    bot = (generator.next() >>> 0) / 0x100000000;
+    bot = (generator.next() >>> 0) * UINT32_TO_DOUBLE;
     result = (top + bot) / (1 << 21);
   } while (result === 0);
   return result;
@@ -44,6 +47,21 @@ export const rotl64 = (x: bigint, k: number): bigint => {
   return ((x << n) | (x >> (64n - n))) & MASK_64;
 };
 
+export const rotl64_7 = (x: bigint): bigint =>
+  ((x << 7n) | (x >> 57n)) & MASK_64;
+
+export const rotl64_23 = (x: bigint): bigint =>
+  ((x << 23n) | (x >> 41n)) & MASK_64;
+
+export const rotl64_24 = (x: bigint): bigint =>
+  ((x << 24n) | (x >> 40n)) & MASK_64;
+
+export const rotl64_37 = (x: bigint): bigint =>
+  ((x << 37n) | (x >> 27n)) & MASK_64;
+
+export const rotl64_45 = (x: bigint): bigint =>
+  ((x << 45n) | (x >> 19n)) & MASK_64;
+
 export const uint64ToDouble = (x: bigint): number => {
-  return Number((x & MASK_64) >> 11n) / 9007199254740992;
+  return Number(x >> 11n) * UINT53_TO_DOUBLE;
 };

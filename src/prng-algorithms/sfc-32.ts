@@ -3,6 +3,7 @@ import type {
   PRNGAlgorithm,
   Sfc32GeneratorState,
 } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 import { expand32 } from '../seed';
 
 /**
@@ -35,7 +36,7 @@ class Sfc32Generator implements GeneratorInterface<Sfc32GeneratorState> {
     this.b = (this.c + (this.c << 3)) >>> 0;
     this.c = ((this.c << 21) | (this.c >>> 11)) >>> 0;
     this.c = (this.c + t) >>> 0;
-    return (t >>> 0) / 4294967296;
+    return (t >>> 0) * UINT32_TO_DOUBLE;
   }
 
   state(): Sfc32GeneratorState {

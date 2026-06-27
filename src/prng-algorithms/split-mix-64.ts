@@ -29,7 +29,7 @@ class SplitMix64Generator
     let z = this.s;
     z = ((z ^ (z >> 30n)) * 0xbf58476d1ce4e5b9n) & MASK_64;
     z = ((z ^ (z >> 27n)) * 0x94d049bb133111ebn) & MASK_64;
-    return (z ^ (z >> 31n)) & MASK_64;
+    return z ^ (z >> 31n);
   }
 
   next(): number {
@@ -57,7 +57,7 @@ export const splitMix64: PRNGAlgorithm<SplitMix64GeneratorState> = (
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => uint64ToDouble(generator.nextUint64());
   prng.quick = prng;
   prng.double = prng;
   prng.int32 = () => Number(generator.nextUint64() & 0xffffffffn) | 0;

@@ -1,4 +1,5 @@
 import type { GeneratorInterface, PRNGAlgorithm } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 
 export type SplitMix32GeneratorState = { s: number };
 
@@ -31,7 +32,7 @@ class SplitMix32Generator
   }
 
   next(): number {
-    return this.nextUint32() / 4294967296;
+    return this.nextUint32() * UINT32_TO_DOUBLE;
   }
 
   state(): SplitMix32GeneratorState {
@@ -57,7 +58,7 @@ export const splitMix32: PRNGAlgorithm<SplitMix32GeneratorState> = (
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
-  prng.int32 = () => (generator.nextUint32?.() ?? prng() * 0x100000000) | 0;
+  prng.int32 = () => generator.nextUint32() | 0;
   prng.state = () => generator.state();
 
   return prng;

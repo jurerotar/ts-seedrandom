@@ -4,7 +4,7 @@ import type {
   PRNGAlgorithm,
 } from '../types';
 import { expand32From64 } from '../seed';
-import { MASK_64 } from '../utils';
+import { MASK_64, UINT32_TO_DOUBLE } from '../utils';
 
 /**
  * Middle Square Weyl Sequence (MSWS) PRNG by Bernard Widynski.
@@ -26,15 +26,14 @@ class MiddleSquareWeylGenerator
   }
 
   nextUint32(): number {
-    this.x = (this.x * this.x) & MASK_64;
     this.w = (this.w + this.s) & MASK_64;
-    this.x = (this.x + this.w) & MASK_64;
-    this.x = ((this.x >> 32n) | (this.x << 32n)) & MASK_64;
-    return Number(this.x & 0xffffffffn) >>> 0;
+    const x = (this.x * this.x + this.w) & MASK_64;
+    this.x = ((x >> 32n) | (x << 32n)) & MASK_64;
+    return Number(x >> 32n) >>> 0;
   }
 
   next(): number {
-    return this.nextUint32() / 4294967296;
+    return this.nextUint32() * UINT32_TO_DOUBLE;
   }
 
   state(): MiddleSquareWeylGeneratorState {
@@ -66,7 +65,7 @@ export const middleSquareWeyl: PRNGAlgorithm<MiddleSquareWeylGeneratorState> = (
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => generator.nextUint32() * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;

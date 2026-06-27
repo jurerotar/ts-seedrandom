@@ -46,26 +46,27 @@ The following PRNG algorithms are available:
 1. `prngAlea`: Alea algorithm
 2. `prngArc4`: ARC4 algorithm
 3. `prngTychei`: Tyche-i algorithm
-4. `prngXor128`: XorShift128 algorithm
-5. `prngXor4096`: XorShift4096 algorithm
-6. `prngXorShift7`: XorShift7 algorithm
-7. `prngXorWow`: Xorwow algorithm
-8. `prngMulberry32`: Mulberry 32 algorithm
-9. `prngXoshiro128plus`: Xoshiro128+ algorithm
-10. `prngXoshiro128plusplus`: Xoshiro128++ algorithm
-11. `prngXoshiro256plusplus`: Xoshiro256++ algorithm
-12. `prngXoshiro256starstar`: Xoshiro256** algorithm
-13. `prngSplitMix64`: SplitMix64 algorithm
-14. `prngSplitMix32`: SplitMix32 algorithm
-15. `prngSfc32`: SFC32 algorithm
-16. `prngJsf32`: JSF32 algorithm
-17. `prngXoroshiro128ss`: Xoroshiro128** algorithm
-18. `prngXoroshiro128plus`: Xoroshiro128+ algorithm
-19. `prngParkMiller`: Lehmer (Park-Miller) algorithm
-20. `prngLcg32`: 32-bit linear congruential generator using Numerical Recipes constants
-21. `prngXorShift32`: Marsaglia XorShift32 algorithm
-22. `prngXorShift64star`: XorShift64* algorithm
-23. `prngMiddleSquareWeyl`: Middle Square Weyl Sequence algorithm
+4. `prngMulberry32`: Mulberry 32 algorithm
+5. `prngSplitMix64`: SplitMix64 algorithm
+6. `prngPcg32`: PCG32 algorithm
+7. `prngXor128`: XorShift128 algorithm
+8. `prngXor4096`: XorShift4096 algorithm
+9. `prngXorShift7`: XorShift7 algorithm
+10. `prngXorWow`: Xorwow algorithm
+11. `prngXoshiro128plus`: Xoshiro128+ algorithm
+12. `prngXoshiro128plusplus`: Xoshiro128++ algorithm
+13. `prngXoshiro256plusplus`: Xoshiro256++ algorithm
+14. `prngXoshiro256starstar`: Xoshiro256** algorithm
+15. `prngSplitMix32`: SplitMix32 algorithm
+16. `prngSfc32`: SFC32 algorithm
+17. `prngJsf32`: JSF32 algorithm
+18. `prngXoroshiro128ss`: Xoroshiro128** algorithm
+19. `prngXoroshiro128plus`: Xoroshiro128+ algorithm
+20. `prngParkMiller`: Lehmer (Park-Miller) algorithm
+21. `prngLcg32`: 32-bit linear congruential generator using Numerical Recipes constants
+22. `prngXorShift32`: Marsaglia XorShift32 algorithm
+23. `prngXorShift64star`: XorShift64* algorithm
+24. `prngMiddleSquareWeyl`: Middle Square Weyl Sequence algorithm
 
 You can import and use any of these algorithms in the same way as demonstrated in the usage examples above.
 
@@ -83,6 +84,7 @@ None of these algorithms are cryptographically secure. Use Web Crypto or Node's 
 | `prngXorShift7` | Fast XorShift-family generator with larger state than XorShift32. | Linear artifacts; not a modern default for demanding statistical workloads. |
 | `prngXorWow` | Legacy Marsaglia/NVIDIA-style XorShift with Weyl sequence. | Linear core and known statistical weaknesses compared with modern alternatives. |
 | `prngMulberry32` | Tiny, fast 32-bit generator for games, UI effects, and procedural fixtures. | Small 32-bit state; not suitable when long independent streams or high statistical quality matter. |
+| `prngPcg32` | Compact modern generator with good statistical behavior for deterministic fixtures and simulations. | Uses BigInt in this implementation; slower than pure 32-bit generators. |
 | `prngXoshiro128plus` | Fast 32-bit xoshiro-family stream. | The `+` output has weaker low bits; prefer `prngXoshiro128plusplus` for general use. |
 | `prngXoshiro128plusplus` | Strong default when BigInt-free 32-bit performance is preferred. | Non-cryptographic; 128-bit state is smaller than the 256-bit variants. |
 | `prngXoshiro256plusplus` | Strong general-purpose modern PRNG with 256-bit state. | Uses BigInt, so it is slower in JavaScript runtimes. |
@@ -103,30 +105,30 @@ None of these algorithms are cryptographically secure. Use Web Crypto or Node's 
 
 | Name | State Size | Time for 1M iters (ms) | Speed (Mops/s) | Per-iter (ns) | × slower | Slower vs fastest |
 | ---- | ---------- | ---------------------: | -------------: | ------------: | -------: | ----------------: |
-| `xor4096` | 4096 bits | 7.01 | 142.58 | 7.01 | 1.00× | 0.0% |
-| `xorshift7` | 256 bits | 7.63 | 131.13 | 7.63 | 1.09× | 8.7% |
-| `mulberry32` | 32 bits | 7.86 | 127.24 | 7.86 | 1.12× | 12.1% |
-| `xor128` | 128 bits | 7.95 | 125.75 | 7.95 | 1.13× | 13.4% |
-| `xorwow` | 192 bits | 8.10 | 123.46 | 8.10 | 1.15× | 15.5% |
-| `tychei` | 128 bits | 9.10 | 109.85 | 9.10 | 1.30× | 29.8% |
-| `splitMix32` | 32 bits | 9.29 | 107.65 | 9.29 | 1.32× | 32.5% |
-| `alea` | ~96 bits | 9.90 | 101.03 | 9.90 | 1.41× | 41.1% |
-| `xorshift32` | 32 bits | 10.67 | 93.68 | 10.67 | 1.52× | 52.2% |
-| `xoshiro128+` | 128 bits | 11.06 | 90.41 | 11.06 | 1.58× | 57.7% |
-| `xoshiro128++` | 128 bits | 11.94 | 83.75 | 11.94 | 1.70× | 70.2% |
-| `lcg32` | 32 bits | 11.98 | 83.47 | 11.98 | 1.71× | 70.8% |
-| `parkMiller` | 31 bits | 17.64 | 56.68 | 17.64 | 2.52× | 151.6% |
-| `sfc32` | 128 bits | 19.26 | 51.92 | 19.26 | 2.75× | 174.6% |
-| `jsf32` | 128 bits | 28.07 | 35.63 | 28.07 | 4.00× | 300.2% |
-| `arc4` | 2048 bits | 50.87 | 19.66 | 50.87 | 7.25× | 625.3% |
-| `pcg32` | 128 bits | 82.27 | 12.16 | 82.27 | 11.73× | 1073.0% |
-| `xorshift64*` | 64 bits | 93.13 | 10.74 | 93.13 | 13.28× | 1227.8% |
-| `middleSquareWeyl` | 192 bits | 93.44 | 10.70 | 93.44 | 13.32× | 1232.3% |
-| `xoroshiro128plus` | 128 bits | 126.09 | 7.93 | 126.09 | 17.98× | 1697.9% |
-| `splitmix64` | 64 bits | 129.64 | 7.71 | 129.64 | 18.48× | 1748.4% |
-| `xoshiro256++` | 256 bits | 179.76 | 5.56 | 179.76 | 25.63× | 2463.2% |
-| `xoroshiro128ss` | 128 bits | 180.69 | 5.53 | 180.69 | 25.76× | 2476.4% |
-| `xoshiro256**` | 256 bits | 187.33 | 5.34 | 187.33 | 26.71× | 2571.0% |
+| `xor4096` | 4096 bits | 6.85 | 145.88 | 6.85 | 1.00× | 0.0% |
+| `xor128` | 128 bits | 7.28 | 137.43 | 7.28 | 1.06× | 6.2% |
+| `mulberry32` | 32 bits | 7.54 | 132.67 | 7.54 | 1.10× | 10.0% |
+| `xorwow` | 192 bits | 7.55 | 132.39 | 7.55 | 1.10× | 10.2% |
+| `xorshift7` | 256 bits | 7.66 | 130.61 | 7.66 | 1.12× | 11.7% |
+| `splitMix32` | 32 bits | 8.65 | 115.66 | 8.65 | 1.26× | 26.1% |
+| `tychei` | 128 bits | 8.76 | 114.15 | 8.76 | 1.28× | 27.8% |
+| `alea` | ~96 bits | 10.04 | 99.57 | 10.04 | 1.47× | 46.5% |
+| `xorshift32` | 32 bits | 10.28 | 97.27 | 10.28 | 1.50× | 50.0% |
+| `lcg32` | 32 bits | 10.75 | 93.01 | 10.75 | 1.57× | 56.9% |
+| `xoshiro128+` | 128 bits | 11.40 | 87.72 | 11.40 | 1.66× | 66.3% |
+| `xoshiro128++` | 128 bits | 12.06 | 82.89 | 12.06 | 1.76× | 76.0% |
+| `parkMiller` | 31 bits | 16.71 | 59.85 | 16.71 | 2.44× | 143.7% |
+| `sfc32` | 128 bits | 19.11 | 52.33 | 19.11 | 2.79× | 178.8% |
+| `jsf32` | 128 bits | 28.30 | 35.34 | 28.30 | 4.13× | 312.8% |
+| `arc4` | 2048 bits | 31.59 | 31.65 | 31.59 | 4.61× | 360.9% |
+| `xorshift64*` | 64 bits | 80.19 | 12.47 | 80.19 | 11.70× | 1069.9% |
+| `pcg32` | 128 bits | 82.26 | 12.16 | 82.26 | 12.00× | 1100.0% |
+| `middleSquareWeyl` | 192 bits | 85.79 | 11.66 | 85.79 | 12.51× | 1151.5% |
+| `xoroshiro128plus` | 128 bits | 109.25 | 9.15 | 109.25 | 15.94× | 1493.8% |
+| `splitmix64` | 64 bits | 116.85 | 8.56 | 116.85 | 17.05× | 1604.6% |
+| `xoshiro256++` | 256 bits | 142.36 | 7.02 | 142.36 | 20.77× | 1976.7% |
+| `xoshiro256**` | 256 bits | 162.07 | 6.17 | 162.07 | 23.64× | 2264.4% |
+| `xoroshiro128ss` | 128 bits | 162.55 | 6.15 | 162.55 | 23.71× | 2271.3% |
 
 ---
 

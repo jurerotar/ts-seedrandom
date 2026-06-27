@@ -31,11 +31,8 @@ class ParkMillerGenerator
 
   private nextInt(): number {
     // Use Number arithmetic (53-bit integer precision) which is safe here.
-    // Compute s = (A * s) mod M in [1, M-1]. If it lands at 0, map to 1.
-    let next = (A * this.s) % M; // exact under IEEE-754 because < 2^53
-    if (next === 0) {
-      next = 1;
-    }
+    // Compute s = (A * s) mod M in [1, M-1].
+    const next = (A * this.s) % M; // exact under IEEE-754 because < 2^53
     this.s = next | 0;
     return this.s;
   }

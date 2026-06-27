@@ -3,6 +3,7 @@ import type {
   PRNGAlgorithm,
   XorShift32GeneratorState,
 } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 import { expand32 } from '../seed';
 
 /**
@@ -33,7 +34,7 @@ class XorShift32Generator
   }
 
   next(): number {
-    return this.nextUint32() / 4294967296;
+    return this.nextUint32() * UINT32_TO_DOUBLE;
   }
 
   state(): XorShift32GeneratorState {
@@ -61,7 +62,7 @@ export const xorshift32: PRNGAlgorithm<XorShift32GeneratorState> = (
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => generator.nextUint32() * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;

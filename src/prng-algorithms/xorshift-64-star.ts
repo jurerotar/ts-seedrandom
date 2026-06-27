@@ -31,7 +31,7 @@ class XorShift64StarGenerator
     x ^= x >> 12n;
     x ^= (x << 25n) & MASK_64;
     x ^= x >> 27n;
-    this.s = x & MASK_64;
+    this.s = x;
     return (this.s * MULTIPLIER) & MASK_64;
   }
 
@@ -64,7 +64,7 @@ export const xorshift64star: PRNGAlgorithm<XorShift64StarGeneratorState> = (
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => uint64ToDouble(generator.nextUint64());
   prng.quick = prng;
   prng.double = prng;
   prng.int32 = () => Number(generator.nextUint64() & 0xffffffffn) | 0;

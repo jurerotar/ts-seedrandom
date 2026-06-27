@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   XorwowGeneratorState,
 } from '../types';
-import { xorDouble } from '../utils';
+import { UINT32_TO_DOUBLE, xorDouble } from '../utils';
 import { nonZeroVector32 } from '../seed';
 
 /**
@@ -75,7 +75,7 @@ export const xorWow: PRNGAlgorithm<XorwowGeneratorState> = (seed, state) => {
     generator.setState(state);
   }
 
-  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  const prng = () => (generator.next() >>> 0) * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () => xorDouble(generator);
   prng.int32 = () => generator.next() | 0;

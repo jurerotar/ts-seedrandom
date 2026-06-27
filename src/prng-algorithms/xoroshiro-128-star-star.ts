@@ -4,7 +4,13 @@ import type {
   Xoroshiro128StarStarGeneratorState,
 } from '../types';
 import { splitMix64Stream, fnv1a64, seedToBytes } from '../seed';
-import { MASK_64, rotl64, uint64ToDouble } from '../utils';
+import {
+  MASK_64,
+  rotl64_7,
+  rotl64_24,
+  rotl64_37,
+  uint64ToDouble,
+} from '../utils';
 
 /**
  * Xoroshiro128** (xoroshiro128starstar) PRNG by David Blackman and Sebastiano Vigna.
@@ -29,10 +35,10 @@ class Xoroshiro128StarStar
   next64(): bigint {
     const s0 = this.s0;
     let s1 = this.s1;
-    const result = (rotl64((s0 * 5n) & MASK_64, 7) * 9n) & MASK_64;
+    const result = (rotl64_7((s0 * 5n) & MASK_64) * 9n) & MASK_64;
     s1 ^= s0;
-    this.s0 = (rotl64(s0, 24) ^ s1 ^ ((s1 << 16n) & MASK_64)) & MASK_64;
-    this.s1 = rotl64(s1, 37);
+    this.s0 = rotl64_24(s0) ^ s1 ^ ((s1 << 16n) & MASK_64);
+    this.s1 = rotl64_37(s1);
     return result;
   }
 
@@ -59,10 +65,10 @@ export const xoroshiro128ss: PRNGAlgorithm<
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => uint64ToDouble(generator.next64());
   prng.quick = prng;
   prng.double = prng;
-  prng.int32 = () => Number(generator.next64?.() & 0xffffffffn) | 0;
+  prng.int32 = () => Number(generator.next64() & 0xffffffffn) | 0;
   prng.state = () => generator.state();
 
   return prng;

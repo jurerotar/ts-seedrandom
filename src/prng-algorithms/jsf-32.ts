@@ -3,6 +3,7 @@ import type {
   Jsf32GeneratorState,
   PRNGAlgorithm,
 } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 import { expand32 } from '../seed';
 
 /**
@@ -32,7 +33,7 @@ class Jsf32Generator implements GeneratorInterface<Jsf32GeneratorState> {
     this.b = (this.c + this.d) >>> 0;
     this.c = (this.d + e) >>> 0;
     this.d = (this.a + e) >>> 0;
-    return (this.d >>> 0) / 4294967296;
+    return (this.d >>> 0) * UINT32_TO_DOUBLE;
   }
 
   state(): Jsf32GeneratorState {

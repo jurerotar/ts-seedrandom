@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   Xoshiro128PlusPlusGeneratorState,
 } from '../types';
-import { rotl } from '../utils';
+import { rotl, UINT32_TO_DOUBLE } from '../utils';
 import { expand32From64 } from '../seed';
 
 /**
@@ -51,7 +51,7 @@ class Xoshiro128PlusPlusGenerator
   }
 
   next(): number {
-    return this.nextInt() / 4294967296;
+    return this.nextInt() * UINT32_TO_DOUBLE;
   }
 
   state(): Xoshiro128PlusPlusGeneratorState {
@@ -84,7 +84,7 @@ export const xoshiro128plusplus: PRNGAlgorithm<
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;
-  prng.int32 = () => (generator.nextInt?.() ?? prng() * 0x100000000) | 0;
+  prng.int32 = () => generator.nextInt() | 0;
   prng.state = () => generator.state();
 
   return prng;

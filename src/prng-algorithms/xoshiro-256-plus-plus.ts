@@ -4,7 +4,7 @@ import type {
   Xoshiro256PlusPlusGeneratorState,
 } from '../types';
 import { fnv1a64, seedToBytes, splitMix64Stream } from '../seed';
-import { MASK_64, rotl64, uint64ToDouble } from '../utils';
+import { MASK_64, rotl64_23, rotl64_45, uint64ToDouble } from '../utils';
 
 /**
  * Xoshiro256++ PRNG by David Blackman and Sebastiano Vigna.
@@ -36,16 +36,16 @@ class Xoshiro256PlusPlusGenerator
 
   next64(): bigint {
     const result =
-      (rotl64((this.s0 + this.s3) & MASK_64, 23) + this.s0) & MASK_64;
+      (rotl64_23((this.s0 + this.s3) & MASK_64) + this.s0) & MASK_64;
     const t = (this.s1 << 17n) & MASK_64;
 
-    this.s2 = (this.s2 ^ this.s0) & MASK_64;
-    this.s3 = (this.s3 ^ this.s1) & MASK_64;
-    this.s1 = (this.s1 ^ this.s2) & MASK_64;
-    this.s0 = (this.s0 ^ this.s3) & MASK_64;
+    this.s2 ^= this.s0;
+    this.s3 ^= this.s1;
+    this.s1 ^= this.s2;
+    this.s0 ^= this.s3;
 
-    this.s2 = (this.s2 ^ t) & MASK_64;
-    this.s3 = rotl64(this.s3, 45);
+    this.s2 ^= t;
+    this.s3 = rotl64_45(this.s3);
 
     return result;
   }
@@ -80,7 +80,7 @@ export const xoshiro256plusplus: PRNGAlgorithm<
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => uint64ToDouble(generator.next64());
   prng.quick = prng;
   prng.double = prng;
   prng.int32 = () => Number(generator.next64() & 0xffffffffn) | 0;

@@ -3,7 +3,7 @@ import type {
   GeneratorInterface,
   PRNGAlgorithm,
 } from '../types';
-import { mash } from '../utils';
+import { mash, UINT32_TO_DOUBLE } from '../utils';
 
 /**
  * Alea PRNG by Johannes Baagøe.
@@ -39,11 +39,10 @@ class AleaGenerator implements GeneratorInterface<AleaGeneratorState> {
   }
 
   next() {
-    const { c, s0, s1, s2 } = this;
-    const t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
+    const t = 2091639 * this.s0 + this.c * UINT32_TO_DOUBLE; // 2^-32
     this.c = t | 0;
-    this.s0 = s1;
-    this.s1 = s2;
+    this.s0 = this.s1;
+    this.s1 = this.s2;
     this.s2 = t - this.c;
     return this.s2;
   }

@@ -3,7 +3,7 @@
     "outDir": "dist",
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "types": ["vitest"],
+    "types": ["vitest", "node"],
     "allowJs": false,
     "skipLibCheck": true,
     "declaration": true,

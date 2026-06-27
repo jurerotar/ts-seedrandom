@@ -4,7 +4,7 @@ import type {
   Xoroshiro128PlusGeneratorState,
 } from '../types';
 import { splitMix64Stream, fnv1a64, seedToBytes } from '../seed';
-import { MASK_64, rotl64, uint64ToDouble } from '../utils';
+import { MASK_64, rotl64_24, rotl64_37, uint64ToDouble } from '../utils';
 
 /**
  * Xoroshiro128+ PRNG by David Blackman and Sebastiano Vigna.
@@ -30,8 +30,8 @@ class Xoroshiro128Plus
     let s1 = this.s1;
     const result = (s0 + s1) & MASK_64;
     s1 ^= s0;
-    this.s0 = (rotl64(s0, 24) ^ s1 ^ ((s1 << 16n) & MASK_64)) & MASK_64;
-    this.s1 = rotl64(s1, 37);
+    this.s0 = rotl64_24(s0) ^ s1 ^ ((s1 << 16n) & MASK_64);
+    this.s1 = rotl64_37(s1);
     return result;
   }
 
@@ -62,10 +62,10 @@ export const xoroshiro128plus: PRNGAlgorithm<Xoroshiro128PlusGeneratorState> = (
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => uint64ToDouble(generator.next64());
   prng.quick = prng;
   prng.double = prng;
-  prng.int32 = () => Number(generator.next64?.() & 0xffffffffn) | 0;
+  prng.int32 = () => Number(generator.next64() & 0xffffffffn) | 0;
   prng.state = () => generator.state();
 
   return prng;

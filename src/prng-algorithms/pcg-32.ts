@@ -3,6 +3,7 @@ import type {
   PRNGAlgorithm,
   Pcg32GeneratorState,
 } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 
 const MASK64 = (1n << 64n) - 1n;
 const MULTIPLIER = 6364136223846793005n;
@@ -33,11 +34,10 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
     const oldState = this.s;
     this.s = (oldState * MULTIPLIER + (this.inc | 1n)) & MASK64;
 
-    const xorshiftedBig = ((oldState >> 18n) ^ oldState) >> 27n;
-
     const rot = Number((oldState >> 59n) & 31n);
 
-    const xorshifted = Number(xorshiftedBig & 0xffffffffn) >>> 0;
+    const xorshifted =
+      Number((((oldState >> 18n) ^ oldState) >> 27n) & 0xffffffffn) >>> 0;
 
     const result =
       (xorshifted >>> rot) | ((xorshifted << ((32 - rot) & 31)) >>> 0);
@@ -45,7 +45,7 @@ class Pcg32Generator implements GeneratorInterface<Pcg32GeneratorState> {
   }
 
   next(): number {
-    return this.nextUInt32() / 4294967296; // 2^32
+    return this.nextUInt32() * UINT32_TO_DOUBLE; // 2^32
   }
 
   state(): Pcg32GeneratorState {
@@ -68,7 +68,7 @@ export const pcg32: PRNGAlgorithm<Pcg32GeneratorState> = (seed, state) => {
     generator.setState(state);
   }
 
-  const prng = () => generator.next();
+  const prng = () => generator.nextUInt32() * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () =>
     prng() + ((prng() * 0x200000) | 0) * 1.1102230246251565e-16;

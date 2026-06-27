@@ -7,7 +7,7 @@ import type {
 
 const ARC4_START_DENOMINATION = 281474976710656;
 const ARC4_SIGNIFICANCE = 4503599627370496;
-const ARC4_OVERFLOW = 9007199254740992n;
+const ARC4_OVERFLOW = 9007199254740992;
 
 type ARC4GeneratorInterface = GeneratorInterface<Arc4GeneratorState> &
   Arc4GeneratorExtraMethods;
@@ -20,7 +20,7 @@ type ARC4GeneratorInterface = GeneratorInterface<Arc4GeneratorState> &
 class ARC4Generator implements ARC4GeneratorInterface {
   i = 0;
   j = 0;
-  S: number[] = [];
+  S = new Uint8Array(256);
 
   constructor(seed?: string | number, skipInit = false) {
     if (!skipInit) {
@@ -57,7 +57,7 @@ class ARC4Generator implements ARC4GeneratorInterface {
   }
 
   next() {
-    let n = this.g(6);
+    let n = this.g6();
     let d = ARC4_START_DENOMINATION;
     let x = 0;
 
@@ -98,6 +98,26 @@ class ARC4Generator implements ARC4GeneratorInterface {
     return r;
   }
 
+  private g6(): number {
+    let t: number;
+    let r = 0;
+    let { i, j, S } = this;
+
+    for (let n = 0; n < 6; n++) {
+      i = 0xff & (i + 1);
+      t = S[i];
+      j = 0xff & (j + t);
+      S[i] = S[j];
+      S[j] = t;
+      r = r * 256 + S[0xff & (S[i] + S[j])];
+    }
+
+    this.i = i;
+    this.j = j;
+
+    return r;
+  }
+
   mixKey(seed: string, key: number[]) {
     let smear = 0;
     for (let j = 0; j < seed.length; j++) {
@@ -120,7 +140,7 @@ class ARC4Generator implements ARC4GeneratorInterface {
   setState(state: Arc4GeneratorState): void {
     this.i = state.i;
     this.j = state.j;
-    this.S = [...state.S];
+    this.S = Uint8Array.from(state.S);
   }
 }
 

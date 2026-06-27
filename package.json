@@ -43,9 +43,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.0",
+    "@types/node": "26.0.1",
+    "@typescript/native-preview": "7.0.0-dev.20260617.2",
     "tsdown": "0.22.3",
     "typescript": "6.0.3",
-    "@typescript/native-preview": "7.0.0-dev.20260617.2",
     "vitest": "4.1.9"
   }
 }

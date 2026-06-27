@@ -3,7 +3,7 @@ import type {
   PRNGAlgorithm,
   Xor4096GeneratorState,
 } from '../types';
-import { xorDouble } from '../utils';
+import { UINT32_TO_DOUBLE, xorDouble } from '../utils';
 
 /**
  * Xor4096 PRNG by Richard Brent.
@@ -120,7 +120,7 @@ export const xor4096: PRNGAlgorithm<Xor4096GeneratorState> = (seed, state) => {
     generator.setState(state);
   }
 
-  const prng = () => (generator.next() >>> 0) / 0x100000000;
+  const prng = () => (generator.next() >>> 0) * UINT32_TO_DOUBLE;
   prng.quick = prng;
   prng.double = () => xorDouble(generator);
   prng.int32 = () => generator.next() | 0;

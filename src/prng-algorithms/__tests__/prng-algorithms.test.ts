@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, test, expect } from 'vitest';
 import {
   prngAlea,
@@ -27,33 +28,116 @@ import {
 } from '../../index';
 
 const PRNGS = [
-  { name: 'alea', prng: prngAlea },
-  { name: 'arc4', prng: prngArc4 },
-  { name: 'tychei', prng: prngTychei },
-  { name: 'mulberry32', prng: prngMulberry32 },
-  { name: 'splitmix64', prng: prngSplitMix64 },
-  { name: 'pcg32', prng: prngPcg32 },
-  { name: 'xor128', prng: prngXor128 },
-  { name: 'xor4096', prng: prngXor4096 },
-  { name: 'xorshift7', prng: prngXorShift7 },
-  { name: 'xorwow', prng: prngXorWow },
-  { name: 'xoshiro128+', prng: prngXoshiro128plus },
-  { name: 'xoshiro128++', prng: prngXoshiro128plusplus },
-  { name: 'xoshiro256++', prng: prngXoshiro256plusplus },
-  { name: 'xoshiro256**', prng: prngXoshiro256starstar },
-  { name: 'splitMix32', prng: prngSplitMix32 },
-  { name: 'sfc32', prng: prngSfc32 },
-  { name: 'jsf32', prng: prngJsf32 },
-  { name: 'xoroshiro128ss', prng: prngXoroshiro128ss },
-  { name: 'xoroshiro128plus', prng: prngXoroshiro128plus },
-  { name: 'parkMiller', prng: prngParkMiller },
-  { name: 'lcg32', prng: prngLcg32 },
-  { name: 'xorshift32', prng: prngXorShift32 },
-  { name: 'xorshift64*', prng: prngXorShift64star },
-  { name: 'middleSquareWeyl', prng: prngMiddleSquareWeyl },
+  { name: 'alea', exportName: 'prngAlea', prng: prngAlea },
+  { name: 'arc4', exportName: 'prngArc4', prng: prngArc4 },
+  { name: 'tychei', exportName: 'prngTychei', prng: prngTychei },
+  { name: 'mulberry32', exportName: 'prngMulberry32', prng: prngMulberry32 },
+  { name: 'splitmix64', exportName: 'prngSplitMix64', prng: prngSplitMix64 },
+  { name: 'pcg32', exportName: 'prngPcg32', prng: prngPcg32 },
+  { name: 'xor128', exportName: 'prngXor128', prng: prngXor128 },
+  { name: 'xor4096', exportName: 'prngXor4096', prng: prngXor4096 },
+  { name: 'xorshift7', exportName: 'prngXorShift7', prng: prngXorShift7 },
+  { name: 'xorwow', exportName: 'prngXorWow', prng: prngXorWow },
+  {
+    name: 'xoshiro128+',
+    exportName: 'prngXoshiro128plus',
+    prng: prngXoshiro128plus,
+  },
+  {
+    name: 'xoshiro128++',
+    exportName: 'prngXoshiro128plusplus',
+    prng: prngXoshiro128plusplus,
+  },
+  {
+    name: 'xoshiro256++',
+    exportName: 'prngXoshiro256plusplus',
+    prng: prngXoshiro256plusplus,
+  },
+  {
+    name: 'xoshiro256**',
+    exportName: 'prngXoshiro256starstar',
+    prng: prngXoshiro256starstar,
+  },
+  { name: 'splitMix32', exportName: 'prngSplitMix32', prng: prngSplitMix32 },
+  { name: 'sfc32', exportName: 'prngSfc32', prng: prngSfc32 },
+  { name: 'jsf32', exportName: 'prngJsf32', prng: prngJsf32 },
+  {
+    name: 'xoroshiro128ss',
+    exportName: 'prngXoroshiro128ss',
+    prng: prngXoroshiro128ss,
+  },
+  {
+    name: 'xoroshiro128plus',
+    exportName: 'prngXoroshiro128plus',
+    prng: prngXoroshiro128plus,
+  },
+  {
+    name: 'parkMiller',
+    exportName: 'prngParkMiller',
+    prng: prngParkMiller,
+  },
+  { name: 'lcg32', exportName: 'prngLcg32', prng: prngLcg32 },
+  {
+    name: 'xorshift32',
+    exportName: 'prngXorShift32',
+    prng: prngXorShift32,
+  },
+  {
+    name: 'xorshift64*',
+    exportName: 'prngXorShift64star',
+    prng: prngXorShift64star,
+  },
+  {
+    name: 'middleSquareWeyl',
+    exportName: 'prngMiddleSquareWeyl',
+    prng: prngMiddleSquareWeyl,
+  },
 ];
 
 const PRNG_TABLE = PRNGS.map(({ name, prng }) => [name, prng] as const);
+
+type TestPrng = (
+  seed?: string | number,
+  state?: unknown,
+) => (() => number) & {
+  quick: () => number;
+  double: () => number;
+  int32: () => number;
+  state: () => unknown;
+};
+
+test('snapshot table matches README algorithms', () => {
+  const readme = readFileSync(new URL('../../../README.md', import.meta.url), {
+    encoding: 'utf8',
+  });
+  const documentedAlgorithms = Array.from(
+    readme.matchAll(/^\d+\. `(prng[^`]+)`:/gm),
+    ([, exportName]) => exportName,
+  );
+
+  expect(PRNGS.map(({ exportName }) => exportName)).toEqual(
+    documentedAlgorithms,
+  );
+});
+
+describe('snapshots', () => {
+  test.for(PRNGS)('$name matches the public output vector', ({ prng }) => {
+    const quick = prng('snapshot-seed');
+    const double = prng('snapshot-seed');
+    const int32 = prng('snapshot-seed');
+    const mixed = prng('snapshot-seed');
+
+    const snapshot = {
+      quick: Array.from({ length: 8 }, () => quick()),
+      double: Array.from({ length: 4 }, () => double.double()),
+      int32: Array.from({ length: 8 }, () => int32.int32()),
+      mixed: [mixed(), mixed.quick(), mixed.double(), mixed.int32()],
+      state: mixed.state(),
+    };
+
+    expect(snapshot).toMatchSnapshot();
+  });
+});
 
 describe.for(PRNG_TABLE)('%s', ([, prng]) => {
   test('is deterministic from seed', () => {
@@ -85,8 +169,7 @@ describe.for(PRNG_TABLE)('%s', ([, prng]) => {
 
     const savedState = original.state();
 
-    // @ts-expect-error: ts issue due to different states
-    const resumed = prng('ignored', savedState);
+    const resumed = (prng as TestPrng)('ignored', savedState);
     const next5 = Array.from({ length: 5 }, () => resumed());
     const continued = Array.from({ length: 5 }, () => original());
 

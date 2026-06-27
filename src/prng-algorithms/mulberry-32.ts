@@ -3,6 +3,7 @@ import type {
   PRNGAlgorithm,
   Mulberry32GeneratorState,
 } from '../types';
+import { UINT32_TO_DOUBLE } from '../utils';
 
 /**
  * Mulberry32 PRNG by David Stafford.
@@ -26,7 +27,7 @@ class Mulberry32Generator
     let t = this.s;
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    return ((t ^ (t >>> 14)) >>> 0) * UINT32_TO_DOUBLE;
   }
 
   state() {
